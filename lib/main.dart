@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:recipes/AddRecipe.dart';
 
 import 'model/Recipe.dart';
 import 'RecipeDetail.dart';
@@ -77,6 +78,10 @@ class _RecipeState extends State<Recipes> {
         title: Text(widget.title),
       ),
       body: Scrollbar(child: _buildRecipesList()),
+      floatingActionButton: FloatingActionButton(
+          onPressed: () => Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) => AddRecipeScreen())),
+          child: Icon(Icons.add)),
     );
   }
 

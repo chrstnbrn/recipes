@@ -51,13 +51,4 @@ class RecipeDetailScreen extends StatelessWidget {
     result += ingredient.ingredientName;
     return result;
   }
-
-  Widget _buildRecipeSteps(List<RecipeStep> steps) {
-    return ListView.builder(
-      padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
-      shrinkWrap: true,
-      itemCount: steps.length,
-      itemBuilder: (context, i) => Text(steps[i].description),
-    );
-  }
 }
