@@ -1,9 +1,8 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:crypto/crypto.dart' as crypto;
-import 'package:intl/intl.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 import 'model/Recipe.dart';
 import 'RecipeDetail.dart';
@@ -18,14 +17,16 @@ class RecipesApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: Recipes(title: 'Recipes'),
+      home: Recipes(
+          title: 'Recipes', database: FirebaseDatabase.instance.reference()),
     );
   }
 }
 
 class Recipes extends StatefulWidget {
-  Recipes({Key key, this.title}) : super(key: key);
+  Recipes({Key key, this.title, this.database}) : super(key: key);
   final String title;
+  final DatabaseReference database;
 
   @override
   _RecipeState createState() => _RecipeState();
@@ -37,7 +38,7 @@ class _RecipeState extends State<Recipes> {
   @override
   void initState() {
     super.initState();
-    _recipes = fetchRecipes();
+    _recipes = fetchRecipes(widget.database);
   }
 
   final _biggerFont = const TextStyle(fontSize: 18.0);
@@ -79,51 +80,11 @@ class _RecipeState extends State<Recipes> {
     );
   }
 
-  static Future<List<Recipe>> fetchRecipes() async {
-    var dbId = "recipedb";
-    var collectionId = "recipes";
-    var now = new DateFormat("EEE, dd MMM yyyy HH:mm:ss")
-            .format(new DateTime.now().toUtc()) +
-        " GMT";
-    var authHeader = getAuthorizationTokenUsingMasterKey(
-        "GET",
-        "docs",
-        "dbs/$dbId/colls/$collectionId",
-        now,
-        "y8AM2lGItIWDXfnikbTIXDidSt8N7R08eiPan8HVy853xPoYloHATW9sbxAQfyO0RsyTrgIBBf4WnpKr15WFbw==");
-
-    var headers = {
-      "Authorization": authHeader,
-      "x-ms-version": "2018-12-31",
-      "x-ms-date": now
-    };
-
-    var res = await http.get(
-        "https://recipe-db.documents.azure.com:443/dbs/$dbId/colls/$collectionId/docs",
-        headers: headers);
-
-    var recipeDocuments = jsonDecode(utf8.decode(res.bodyBytes))["Documents"];
-    return List<Recipe>.from(
-        recipeDocuments.map((recipe) => recipeFromJson(recipe)));
-  }
-
-  static String getAuthorizationTokenUsingMasterKey(String verb,
-      String resourceType, String resourceId, String date, String masterKey) {
-    var text = (verb ?? "").toLowerCase() +
-        "\n" +
-        (resourceType ?? "").toLowerCase() +
-        "\n" +
-        (resourceId ?? "") +
-        "\n" +
-        date.toLowerCase() +
-        "\n" +
-        "" +
-        "\n";
-
-    var body = utf8.encode(text);
-
-    var hmacSha256 = new crypto.Hmac(crypto.sha256, base64.decode(masterKey));
-    var signature = base64.encode(hmacSha256.convert(body).bytes);
-    return Uri.encodeComponent("type=master&ver=1.0&sig=$signature");
+  static Future<List<Recipe>> fetchRecipes(DatabaseReference database) async {
+    return database.once().then((DataSnapshot snapshot) {
+      var result = jsonDecode(jsonEncode(snapshot.value));
+      return List<Recipe>.from(
+          result["recipes"].map((recipe) => recipeFromJson(recipe)));
+    });
   }
 }
