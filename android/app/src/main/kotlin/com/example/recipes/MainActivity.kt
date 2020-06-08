@@ -1,4 +1,4 @@
-package com.example.recipes
+package de.app.recipes
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity
