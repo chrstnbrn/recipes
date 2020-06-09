@@ -40,8 +40,8 @@ class Recipe {
   Recipe({
     this.name,
     this.servings,
-    this.ingredients,
-    this.steps,
+    this.ingredients = const [],
+    this.steps = const [],
   });
 
   factory Recipe.fromJson(Map<String, dynamic> json) => Recipe(
