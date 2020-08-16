@@ -37,7 +37,7 @@ class AddRecipeFormState extends State<AddRecipeForm> {
           children: <Widget>[
             _buildRecipeNameField(),
             _buildServingsField(),
-            _buildIngredients(),
+            IngredientList(recipe.ingredients),
             _buildSubmitButton(context)
           ],
         ));
@@ -52,14 +52,51 @@ class AddRecipeFormState extends State<AddRecipeForm> {
     );
   }
 
-  Widget _buildIngredients() {
+  Widget _buildServingsField() {
+    return TouchSpinFormField(
+      initialValue: 2,
+      decoration: InputDecoration(labelText: "Servings"),
+      onSaved: (value) => recipe.servings = value,
+    );
+  }
+
+  Widget _buildSubmitButton(BuildContext context) {
+    return Row(children: <Widget>[
+      Expanded(
+          child: RaisedButton(
+        onPressed: () {
+          if (_formKey.currentState.validate()) {
+            _formKey.currentState.save();
+            print(recipe.toJson());
+            Scaffold.of(context)
+                .showSnackBar(SnackBar(content: Text('Processing Data')));
+          }
+        },
+        child: Text('Submit'),
+      ))
+    ]);
+  }
+}
+
+class IngredientList extends StatefulWidget {
+  final List<RecipeIngredient> ingredients;
+
+  IngredientList(this.ingredients);
+
+  @override
+  State<StatefulWidget> createState() => IngredientListState();
+}
+
+class IngredientListState extends State<IngredientList> {
+  @override
+  Widget build(BuildContext context) {
     return Padding(
         padding: EdgeInsets.only(top: 32, bottom: 32),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             _buildIngredientsHeader(),
-            ...this.recipe.ingredients.map((i) => _buildIngredient(i)),
+            ...this.widget.ingredients.map((i) => _buildIngredient(i)),
             _buildAddIngredientButton()
           ],
         ));
@@ -102,7 +139,7 @@ class AddRecipeFormState extends State<AddRecipeForm> {
       content: IngredientForm(
           ingredient: new RecipeIngredient(),
           onSubmit: (ingredient) => setState(() {
-                this.recipe.ingredients.add(ingredient);
+                this.widget.ingredients.add(ingredient);
               })),
     );
   }
@@ -129,38 +166,13 @@ class AddRecipeFormState extends State<AddRecipeForm> {
           color: Theme.of(context).errorColor,
           onPressed: () {
             setState(() {
-              this.recipe.ingredients.remove(ingredient);
+              this.widget.ingredients.remove(ingredient);
             });
             Navigator.of(context).pop();
           },
         )
       ],
     );
-  }
-
-  Widget _buildServingsField() {
-    return TouchSpinFormField(
-      initialValue: 2,
-      decoration: InputDecoration(labelText: "Servings"),
-      onSaved: (value) => recipe.servings = value,
-    );
-  }
-
-  Widget _buildSubmitButton(BuildContext context) {
-    return Row(children: <Widget>[
-      Expanded(
-          child: RaisedButton(
-        onPressed: () {
-          if (_formKey.currentState.validate()) {
-            _formKey.currentState.save();
-            print(recipe.toJson());
-            Scaffold.of(context)
-                .showSnackBar(SnackBar(content: Text('Processing Data')));
-          }
-        },
-        child: Text('Submit'),
-      ))
-    ]);
   }
 }
 
