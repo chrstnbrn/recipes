@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:recipes/CheckableText.dart';
+import 'package:recipes/widgets/checkable_text.dart';
 
-import 'model/Recipe.dart';
+import '../models/recipe.dart';
 
 class RecipeDetailScreen extends StatelessWidget {
   RecipeDetailScreen({Key key, this.recipe}) : super(key: key);
