@@ -20,7 +20,7 @@ class RecipeDetailScreen extends StatelessWidget {
   Widget _buildRecipeDetail(Recipe recipe) {
     return Container(
         child: Column(children: <Widget>[
-          Flexible(child: _buildRecipeList(recipe)),
+      Flexible(child: _buildRecipeList(recipe)),
     ]));
   }
 
@@ -35,20 +35,14 @@ class RecipeDetailScreen extends StatelessWidget {
         itemBuilder: (context, i) {
           final item = itemsToDisplay[i];
           if (item is RecipeIngredient) {
-            return Text(getIngredientText(item));
+            return Text(item.toString());
           } else if (item is RecipeStep) {
-            return Padding(padding: EdgeInsets.fromLTRB(0, 10, 0, 0), child: CheckableText(text: item.description));
+            return Padding(
+                padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                child: CheckableText(text: item.description));
           } else {
             return Text("");
           }
         });
-  }
-
-  String getIngredientText(RecipeIngredient ingredient) {
-    var result = "";
-    if (ingredient.amount != null) result += "${ingredient.amount} ";
-    if (ingredient.unit != null) result += "${ingredient.unit} ";
-    result += ingredient.ingredientName;
-    return result;
   }
 }

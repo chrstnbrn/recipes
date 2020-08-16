@@ -15,9 +15,15 @@ class RecipesApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Recipes',
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-      ),
+      theme: ThemeData.from(
+        colorScheme: ColorScheme.light(
+            primary: Colors.green,
+            secondary: Colors.lightGreen.shade500,
+            onPrimary: Colors.white,
+            onSecondary: Colors.white),
+      ).copyWith(
+          buttonTheme: ButtonThemeData(
+              buttonColor: Colors.green, textTheme: ButtonTextTheme.primary)),
       home: Recipes(
           title: 'Recipes', database: FirebaseDatabase.instance.reference()),
     );

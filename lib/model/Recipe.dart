@@ -25,8 +25,6 @@ import 'dart:convert';
 
 abstract class RecipeDetailListItem {}
 
-
-
 Recipe recipeFromJson(Map<String, dynamic> jsonMap) => Recipe.fromJson(jsonMap);
 
 String recipeToJson(Recipe data) => json.encode(data.toJson());
@@ -40,27 +38,30 @@ class Recipe {
   Recipe({
     this.name,
     this.servings,
-    this.ingredients = const [],
-    this.steps = const [],
+    this.ingredients,
+    this.steps,
   });
 
   factory Recipe.fromJson(Map<String, dynamic> json) => Recipe(
-    name: json["name"],
-    servings: json["servings"],
-    ingredients: List<RecipeIngredient>.from(json["ingredients"].map((x) => RecipeIngredient.fromJson(x))),
-    steps: List<RecipeStep>.from(json["steps"].map((x) => RecipeStep.fromJson(x))),
-  );
+        name: json["name"],
+        servings: json["servings"],
+        ingredients: List<RecipeIngredient>.from(
+            json["ingredients"].map((x) => RecipeIngredient.fromJson(x)),
+            growable: true),
+        steps: List<RecipeStep>.from(
+            json["steps"].map((x) => RecipeStep.fromJson(x))),
+      );
 
   Map<String, dynamic> toJson() => {
-    "name": name,
-    "servings": servings,
-    "ingredients": List<dynamic>.from(ingredients.map((x) => x.toJson())),
-    "steps": List<dynamic>.from(steps.map((x) => x.toJson())),
-  };
+        "name": name,
+        "servings": servings,
+        "ingredients": List<dynamic>.from(ingredients.map((x) => x.toJson())),
+        "steps": List<dynamic>.from(steps.map((x) => x.toJson())),
+      };
 }
 
 class RecipeIngredient implements RecipeDetailListItem {
-  int amount;
+  double amount;
   String unit;
   String ingredientName;
 
@@ -70,20 +71,29 @@ class RecipeIngredient implements RecipeDetailListItem {
     this.ingredientName,
   });
 
-  factory RecipeIngredient.fromJson(Map<String, dynamic> json) => RecipeIngredient(
-    amount: json["amount"] == null ? null : json["amount"],
-    unit: json["unit"] == null ? null : json["unit"],
-    ingredientName: json["ingredientName"],
-  );
+  factory RecipeIngredient.fromJson(Map<String, dynamic> json) =>
+      RecipeIngredient(
+        amount: json["amount"] == null ? null : json["amount"],
+        unit: json["unit"] == null ? null : json["unit"],
+        ingredientName: json["ingredientName"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "amount": amount == null ? null : amount,
-    "unit": unit == null ? null : unit,
-    "ingredientName": ingredientName,
-  };
+        "amount": amount == null ? null : amount,
+        "unit": unit == null ? null : unit,
+        "ingredientName": ingredientName,
+      };
+
+  String toString() {
+    var result = "";
+    if (this.amount != null) result += "${this.amount} ";
+    if (this.unit != null) result += "${this.unit} ";
+    result += this.ingredientName;
+    return result;
+  }
 }
 
-class RecipeStep implements RecipeDetailListItem{
+class RecipeStep implements RecipeDetailListItem {
   String description;
 
   RecipeStep({
@@ -91,10 +101,10 @@ class RecipeStep implements RecipeDetailListItem{
   });
 
   factory RecipeStep.fromJson(Map<String, dynamic> json) => RecipeStep(
-    description: json["description"],
-  );
+        description: json["description"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "description": description,
-  };
+        "description": description,
+      };
 }
