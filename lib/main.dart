@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:recipes/store/recipe_repository.dart';
 import 'package:recipes/theme/style.dart';
 
 import 'screens/recipes.dart';
@@ -13,7 +14,9 @@ class RecipesApp extends StatelessWidget {
       title: 'Recipes',
       theme: appTheme(),
       home: Recipes(
-          title: 'Recipes', database: FirebaseDatabase.instance.reference()),
+          title: 'Recipes',
+          repository:
+              new RecipeRepository(FirebaseDatabase.instance.reference())),
     );
   }
 }

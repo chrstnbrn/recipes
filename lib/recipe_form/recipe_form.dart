@@ -7,6 +7,10 @@ import 'ingredient_list.dart';
 import 'step_list.dart';
 
 class RecipeForm extends StatefulWidget {
+  final ValueChanged<Recipe> onSubmit;
+
+  RecipeForm({this.onSubmit});
+
   @override
   RecipeFormState createState() => RecipeFormState();
 }
@@ -57,6 +61,7 @@ class RecipeFormState extends State<RecipeForm> {
             print(recipe.toJson());
             Scaffold.of(context)
                 .showSnackBar(SnackBar(content: Text('Processing Data')));
+            widget.onSubmit(recipe);
           }
         },
         child: Text('Submit'),
