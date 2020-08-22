@@ -3,10 +3,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:recipes/providers/auth_provider.dart';
-import 'package:recipes/screens/add_recipe.dart';
-import 'package:recipes/screens/login.dart';
-import 'package:recipes/screens/recipe_detail.dart';
-import 'package:recipes/screens/recipes.dart';
+import 'package:recipes/router.dart';
+import 'package:recipes/routes.dart';
 import 'package:recipes/store/recipe_repository.dart';
 import 'package:recipes/theme/style.dart';
 
@@ -38,14 +36,10 @@ class RecipesApp extends StatelessWidget {
                   return MaterialApp(
                       title: "Recipes",
                       theme: appTheme(),
-                      initialRoute:
-                          authProvider.isAuthenticated ? "/" : "/login",
-                      routes: {
-                        '/': (context) => Recipes(),
-                        '/login': (context) => Login(),
-                        '/recipe': (context) => RecipeDetailScreen(),
-                        '/addRecipe': (context) => AddRecipeScreen()
-                      });
+                      initialRoute: authProvider.isAuthenticated
+                          ? Routes.recipes
+                          : Routes.login,
+                      onGenerateRoute: Router.generateRoute);
                 }));
           }
 

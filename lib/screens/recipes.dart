@@ -1,9 +1,14 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:recipes/models/recipe.dart';
 import 'package:recipes/providers/auth_provider.dart';
+import 'package:recipes/routes.dart';
+import 'package:recipes/screens/recipe_detail.dart';
 import 'package:recipes/store/recipe_repository.dart';
+
+import 'add_recipe.dart';
 
 class Recipes extends StatefulWidget {
   Recipes({Key key}) : super(key: key);
@@ -34,14 +39,14 @@ class _RecipeState extends State<Recipes> {
             child: Text('Logout'),
             onPressed: () {
               authProvider.signOut();
-              Navigator.pushNamed(context, '/login');
+              Navigator.pushNamed(context, Routes.login);
             },
           )
         ],
       ),
       body: Scrollbar(child: _buildRecipesList(repository.recipes())),
       floatingActionButton: FloatingActionButton(
-          onPressed: () => Navigator.pushNamed(context, '/addRecipe'),
+          onPressed: () => Navigator.pushNamed(context, Routes.addRecipe),
           child: Icon(Icons.add)),
     );
   }
@@ -64,7 +69,8 @@ class _RecipeState extends State<Recipes> {
 
   Widget _buildRow(Recipe recipe) {
     return ListTile(
-      onTap: () => Navigator.pushNamed(context, '/recipe'),
+      onTap: () => Navigator.pushNamed(context, Routes.recipe,
+          arguments: {"recipe": recipe}),
       title: Text(
         recipe.name,
         style: _biggerFont,
