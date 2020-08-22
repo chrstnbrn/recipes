@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:recipes/routes.dart';
 import 'package:recipes/widgets/checkable_text.dart';
 
 import '../models/recipe.dart';
@@ -11,7 +12,16 @@ class RecipeDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Recipe: ${recipe.name}')),
+      appBar: AppBar(
+        title: Text(recipe.name),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: () => Navigator.pushNamed(context, Routes.editRecipe,
+                arguments: {"recipe": recipe}),
+          )
+        ],
+      ),
       body: Padding(
           padding: EdgeInsets.all(16.0), child: _buildRecipeDetail(recipe)),
     );

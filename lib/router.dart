@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:recipes/routes.dart';
 import 'package:recipes/screens/add_recipe_screen.dart';
+import 'package:recipes/screens/edit_recipe_screen.dart';
 import 'package:recipes/screens/login_screen.dart';
 import 'package:recipes/screens/recipe_detail_screen.dart';
 import 'package:recipes/screens/recipes_screen.dart';
@@ -20,6 +21,8 @@ class Router {
         return LoginScreen();
       case Routes.addRecipe:
         return AddRecipeScreen();
+      case Routes.editRecipe:
+        return EditRecipeScreen(recipe: arguments["recipe"]);
       case Routes.recipe:
         return RecipeDetailScreen(recipe: arguments["recipe"]);
       default:

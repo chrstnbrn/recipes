@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:recipes/models/recipe.dart';
+import 'package:recipes/widgets/touch_spin_form_field.dart';
 
-import '../widgets/touch_spin_form_field.dart';
 import 'ingredient_list.dart';
 import 'step_list.dart';
 
 class RecipeForm extends StatefulWidget {
+  final Recipe recipe;
   final ValueChanged<Recipe> onSubmit;
 
-  RecipeForm({this.onSubmit});
+  RecipeForm({@required this.recipe, @required this.onSubmit});
 
   @override
   RecipeFormState createState() => RecipeFormState();
@@ -17,7 +18,6 @@ class RecipeForm extends StatefulWidget {
 
 class RecipeFormState extends State<RecipeForm> {
   final _formKey = GlobalKey<FormState>();
-  Recipe recipe = new Recipe(name: "", servings: 2, ingredients: [], steps: []);
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +28,8 @@ class RecipeFormState extends State<RecipeForm> {
           children: <Widget>[
             _buildRecipeNameField(),
             _buildServingsField(),
-            IngredientList(recipe.ingredients),
-            StepList(recipe.steps),
+            IngredientList(widget.recipe.ingredients),
+            StepList(widget.recipe.steps),
             _buildSubmitButton(context)
           ],
         ));
@@ -37,9 +37,10 @@ class RecipeFormState extends State<RecipeForm> {
 
   Widget _buildRecipeNameField() {
     return TextFormField(
+      initialValue: widget.recipe.name,
       decoration: InputDecoration(labelText: "Recipe name"),
       validator: (value) => value.isEmpty ? "Please enter a recipe name" : null,
-      onSaved: (value) => recipe.name = value,
+      onSaved: (value) => widget.recipe.name = value,
     );
   }
 
@@ -47,7 +48,7 @@ class RecipeFormState extends State<RecipeForm> {
     return TouchSpinFormField(
       initialValue: 2,
       decoration: InputDecoration(labelText: "Servings"),
-      onSaved: (value) => recipe.servings = value,
+      onSaved: (value) => widget.recipe.servings = value,
     );
   }
 
@@ -58,10 +59,10 @@ class RecipeFormState extends State<RecipeForm> {
         onPressed: () {
           if (_formKey.currentState.validate()) {
             _formKey.currentState.save();
-            print(recipe.toJson());
+            print(widget.recipe.toJson());
             Scaffold.of(context)
                 .showSnackBar(SnackBar(content: Text('Processing Data')));
-            widget.onSubmit(recipe);
+            widget.onSubmit(widget.recipe);
           }
         },
         child: Text('Submit'),
