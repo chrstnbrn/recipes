@@ -4,6 +4,7 @@ import 'package:recipes/models/recipe.dart';
 
 import '../widgets/touch_spin_form_field.dart';
 import 'ingredient_list.dart';
+import 'step_list.dart';
 
 class RecipeForm extends StatefulWidget {
   @override
@@ -24,6 +25,7 @@ class RecipeFormState extends State<RecipeForm> {
             _buildRecipeNameField(),
             _buildServingsField(),
             IngredientList(recipe.ingredients),
+            StepList(recipe.steps),
             _buildSubmitButton(context)
           ],
         ));
@@ -32,7 +34,6 @@ class RecipeFormState extends State<RecipeForm> {
   Widget _buildRecipeNameField() {
     return TextFormField(
       decoration: InputDecoration(labelText: "Recipe name"),
-      autofocus: true,
       validator: (value) => value.isEmpty ? "Please enter a recipe name" : null,
       onSaved: (value) => recipe.name = value,
     );
