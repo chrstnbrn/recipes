@@ -71,12 +71,13 @@ class RecipeIngredient implements RecipeDetailListItem {
     this.ingredientName,
   });
 
-  factory RecipeIngredient.fromJson(Map<String, dynamic> json) =>
-      RecipeIngredient(
-        amount: json["amount"] == null ? null : json["amount"],
-        unit: json["unit"] == null ? null : json["unit"],
-        ingredientName: json["ingredientName"],
-      );
+  factory RecipeIngredient.fromJson(Map<String, dynamic> json) {
+    return RecipeIngredient(
+      amount: json["amount"] == null ? null : json["amount"].toDouble(),
+      unit: json["unit"] == null ? null : json["unit"],
+      ingredientName: json["ingredientName"],
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         "amount": amount == null ? null : amount,
