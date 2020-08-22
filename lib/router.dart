@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:recipes/routes.dart';
-import 'package:recipes/screens/add_recipe.dart';
-import 'package:recipes/screens/login.dart';
-import 'package:recipes/screens/recipe_detail.dart';
-import 'package:recipes/screens/recipes.dart';
+import 'package:recipes/screens/add_recipe_screen.dart';
+import 'package:recipes/screens/login_screen.dart';
+import 'package:recipes/screens/recipe_detail_screen.dart';
+import 'package:recipes/screens/recipes_screen.dart';
 
 class Router {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -15,9 +15,9 @@ class Router {
     final Map<String, dynamic> arguments = settings.arguments;
     switch (settings.name) {
       case Routes.recipes:
-        return Recipes();
+        return RecipesScreen();
       case Routes.login:
-        return Login();
+        return LoginScreen();
       case Routes.addRecipe:
         return AddRecipeScreen();
       case Routes.recipe:

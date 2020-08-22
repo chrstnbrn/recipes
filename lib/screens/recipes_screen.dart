@@ -1,23 +1,19 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:recipes/models/recipe.dart';
 import 'package:recipes/providers/auth_provider.dart';
 import 'package:recipes/routes.dart';
-import 'package:recipes/screens/recipe_detail.dart';
 import 'package:recipes/store/recipe_repository.dart';
 
-import 'add_recipe.dart';
-
-class Recipes extends StatefulWidget {
-  Recipes({Key key}) : super(key: key);
+class RecipesScreen extends StatefulWidget {
+  RecipesScreen({Key key}) : super(key: key);
 
   @override
   _RecipeState createState() => _RecipeState();
 }
 
-class _RecipeState extends State<Recipes> {
+class _RecipeState extends State<RecipesScreen> {
   @override
   void initState() {
     super.initState();
