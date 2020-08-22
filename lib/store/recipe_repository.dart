@@ -12,8 +12,10 @@ class RecipeRepository {
   Stream<List<Recipe>> recipes() {
     return database.onValue.map((event) {
       var result = jsonDecode(jsonEncode(event.snapshot.value));
+
+      Map<String, dynamic> recipeMap = result["recipes"];
       return List<Recipe>.from(
-          result["recipes"].map((recipe) => recipeFromJson(recipe)));
+          recipeMap.entries.map((entry) => recipeFromJson(entry.value)));
     });
   }
 
