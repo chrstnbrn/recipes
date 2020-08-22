@@ -1,10 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:recipes/store/recipe_repository.dart';
+import 'package:recipes/screens/login.dart';
 import 'package:recipes/theme/style.dart';
-
-import 'screens/recipes.dart';
 
 void main() => runApp(RecipesApp());
 
@@ -20,15 +17,9 @@ class RecipesApp extends StatelessWidget {
             );
           }
 
-          // Once complete, show your application
           if (snapshot.connectionState == ConnectionState.done) {
             return MaterialApp(
-                title: 'Recipes',
-                theme: appTheme(),
-                home: Recipes(
-                    title: 'Recipes',
-                    repository: new RecipeRepository(
-                        FirebaseDatabase.instance.reference())));
+                title: 'Login', theme: appTheme(), home: Login());
           }
 
           return CircularProgressIndicator();
