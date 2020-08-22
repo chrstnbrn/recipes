@@ -9,19 +9,24 @@ class RecipeRepository {
 
   const RecipeRepository(this.database);
 
-  Stream<List<Recipe>> recipes() {
-    return database.onValue.map((event) {
-      var result = jsonDecode(jsonEncode(event.snapshot.value));
+  DatabaseReference get recipeDatabase => this.database.child("recipes");
 
-      Map<String, dynamic> recipeMap = result["recipes"];
-      return List<Recipe>.from(
-          recipeMap.entries.map((entry) => recipeFromJson(entry.value)));
+  Stream<List<Recipe>> recipes() {
+    return recipeDatabase.onValue.map((event) {
+      Map<String, dynamic> recipeMap =
+          jsonDecode(jsonEncode(event.snapshot.value));
+
+      return List<Recipe>.from(recipeMap.entries
+          .map((entry) => Recipe.fromJson(entry.key, entry.value)));
     });
   }
 
   Future<void> addRecipe(Recipe recipe) {
-    var recipeDatabase = database.child('recipes');
     return recipeDatabase.push().set(recipe.toJson());
+  }
+
+  Future<void> updateRecipe(Recipe recipe) {
+    return recipeDatabase.child(recipe.id).update(recipe.toJson());
   }
 
   // Future<void> deleteRecipe(List<String> idList) async {
@@ -30,10 +35,4 @@ class RecipeRepository {
   //   }));
   // }
 
-  // Future<void> updateRecipe(Recipe recipe) {
-  //   return firestore
-  //       .collection(path)
-  //       .document(todo.id)
-  //       .updateData(todo.toJson());
-  // }
 }

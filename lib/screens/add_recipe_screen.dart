@@ -18,7 +18,11 @@ class AddRecipeScreen extends StatelessWidget {
               padding: EdgeInsets.all(16.0),
               child: RecipeForm(
                   recipe: new Recipe(
-                      name: "", servings: 2, ingredients: [], steps: []),
+                      id: null,
+                      name: "",
+                      servings: 2,
+                      ingredients: [],
+                      steps: []),
                   onSubmit: (recipe) {
                     repository.addRecipe(recipe);
                     Navigator.of(context).pop();

@@ -1,31 +1,30 @@
-import 'dart:convert';
+import 'package:meta/meta.dart';
 
 abstract class RecipeDetailListItem {}
 
-Recipe recipeFromJson(Map<String, dynamic> jsonMap) => Recipe.fromJson(jsonMap);
-
-String recipeToJson(Recipe data) => json.encode(data.toJson());
-
 class Recipe {
+  String id;
   String name;
   int servings;
   List<RecipeIngredient> ingredients;
   List<RecipeStep> steps;
 
   Recipe({
-    this.name,
-    this.servings,
-    this.ingredients,
-    this.steps,
+    @required this.id,
+    @required this.name,
+    @required this.servings,
+    @required this.ingredients,
+    @required this.steps,
   });
 
-  factory Recipe.fromJson(Map<String, dynamic> json) {
+  factory Recipe.fromJson(String id, Map<String, dynamic> json) {
     var name = json["name"];
     var servings = json["servings"];
     var ingredients = json["ingredients"];
     var steps = json["steps"];
 
     return Recipe(
+      id: id,
       name: name,
       servings: servings,
       ingredients: _getList<RecipeIngredient>(

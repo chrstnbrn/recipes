@@ -21,7 +21,7 @@ class EditRecipeScreen extends StatelessWidget {
               child: RecipeForm(
                   recipe: recipe,
                   onSubmit: (recipe) {
-                    repository.addRecipe(recipe);
+                    repository.updateRecipe(recipe);
                     Navigator.of(context).pop();
                   }))),
     );
