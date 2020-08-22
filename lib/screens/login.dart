@@ -1,31 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:recipes/providers/auth_provider.dart';
 
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:recipes/screens/recipes.dart';
 import 'package:recipes/theme/style.dart';
-
-final GoogleSignIn googleSignIn = GoogleSignIn();
-
-Future<UserCredential> signInWithGoogle() async {
-  final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
-
-  final GoogleSignInAuthentication googleSignInAuthentication =
-      await googleSignInAccount.authentication;
-
-  final AuthCredential credential = GoogleAuthProvider.credential(
-    accessToken: googleSignInAuthentication.accessToken,
-    idToken: googleSignInAuthentication.idToken,
-  );
-
-  return FirebaseAuth.instance.signInWithCredential(credential);
-}
-
-void signOutGoogle() async {
-  await googleSignIn.signOut();
-
-  print("User Sign Out");
-}
 
 class Login extends StatefulWidget {
   @override
@@ -35,6 +13,8 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
+    var authProvider = Provider.of<AuthProvider>(context);
+
     return Scaffold(
       body: Container(
         color: Colors.white,
@@ -45,7 +25,7 @@ class _LoginState extends State<Login> {
             children: <Widget>[
               FlutterLogo(size: 150),
               SizedBox(height: 50),
-              _signInButton(),
+              _signInButton(authProvider),
             ],
           ),
         ),
@@ -53,11 +33,11 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Widget _signInButton() {
+  Widget _signInButton(AuthProvider authProvider) {
     return OutlineButton(
       splashColor: Colors.grey,
       onPressed: () {
-        signInWithGoogle().then((value) {
+        authProvider.signInWithGoogle().then((value) {
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) {
