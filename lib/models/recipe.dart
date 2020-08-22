@@ -1,26 +1,3 @@
-//class Recipe {
-//  String name;
-//  List<RecipeIngredient> ingredients;
-//  List<RecipeStep> steps;
-//
-//  Recipe(this.name, this.ingredients, this.steps);
-//}
-//
-//class RecipeIngredient implements RecipeDetailListItem {
-//  double amount;
-//  String unit;
-//  String ingredientName;
-//
-//  RecipeIngredient(this.amount, this.unit, this.ingredientName);
-//}
-//
-//class RecipeStep  implements RecipeDetailListItem{
-//  int stepNumber;
-//  String description;
-//
-//  RecipeStep(this.stepNumber, this.description);
-//}
-//
 import 'dart:convert';
 
 abstract class RecipeDetailListItem {}
@@ -42,15 +19,25 @@ class Recipe {
     this.steps,
   });
 
-  factory Recipe.fromJson(Map<String, dynamic> json) => Recipe(
-        name: json["name"],
-        servings: json["servings"],
-        ingredients: List<RecipeIngredient>.from(
-            json["ingredients"].map((x) => RecipeIngredient.fromJson(x)),
-            growable: true),
-        steps: List<RecipeStep>.from(
-            json["steps"].map((x) => RecipeStep.fromJson(x))),
-      );
+  factory Recipe.fromJson(Map<String, dynamic> json) {
+    var name = json["name"];
+    var servings = json["servings"];
+    var ingredients = json["ingredients"];
+    var steps = json["steps"];
+
+    return Recipe(
+      name: name,
+      servings: servings,
+      ingredients: _getList<RecipeIngredient>(
+          ingredients, (i) => RecipeIngredient.fromJson(i)),
+      steps: _getList<RecipeStep>(steps, (x) => RecipeStep.fromJson(x)),
+    );
+  }
+
+  static List<T> _getList<T>(dynamic list, Function(dynamic) f) {
+    if (list == null) return [];
+    return List<T>.from(list.map(f), growable: true);
+  }
 
   Map<String, dynamic> toJson() => {
         "name": name,

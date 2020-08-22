@@ -1,35 +1,54 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 import 'package:recipes/models/recipe.dart';
-import 'package:recipes/screens/recipe_detail.dart';
+import 'package:recipes/providers/auth_provider.dart';
 import 'package:recipes/store/recipe_repository.dart';
-
-import 'add_recipe.dart';
 
 class Recipes extends StatefulWidget {
   Recipes({Key key}) : super(key: key);
-  final RecipeRepository repository =
-      new RecipeRepository(FirebaseDatabase.instance.reference());
 
   @override
   _RecipeState createState() => _RecipeState();
 }
 
 class _RecipeState extends State<Recipes> {
-  Stream<List<Recipe>> _recipes;
-
   @override
   void initState() {
     super.initState();
-    _recipes = widget.repository.recipes();
   }
 
   final _biggerFont = const TextStyle(fontSize: 18.0);
 
-  Widget _buildRecipesList() {
+  @override
+  Widget build(BuildContext context) {
+    var authProvider = Provider.of<AuthProvider>(context);
+    var repository = Provider.of<RecipeRepository>(context);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Recipes'),
+        actions: [
+          FlatButton(
+            textColor: Colors.white,
+            child: Text('Logout'),
+            onPressed: () {
+              authProvider.signOut();
+              Navigator.pushNamed(context, '/login');
+            },
+          )
+        ],
+      ),
+      body: Scrollbar(child: _buildRecipesList(repository.recipes())),
+      floatingActionButton: FloatingActionButton(
+          onPressed: () => Navigator.pushNamed(context, '/addRecipe'),
+          child: Icon(Icons.add)),
+    );
+  }
+
+  Widget _buildRecipesList(Stream<List<Recipe>> recipes) {
     return StreamBuilder<List<Recipe>>(
-      stream: _recipes,
+      stream: recipes,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return ListView.separated(
@@ -45,28 +64,11 @@ class _RecipeState extends State<Recipes> {
 
   Widget _buildRow(Recipe recipe) {
     return ListTile(
-      onTap: () => Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => RecipeDetailScreen(recipe: recipe))),
+      onTap: () => Navigator.pushNamed(context, '/recipe'),
       title: Text(
         recipe.name,
         style: _biggerFont,
       ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Recipes'),
-      ),
-      body: Scrollbar(child: _buildRecipesList()),
-      floatingActionButton: FloatingActionButton(
-          onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => AddRecipeScreen(
-                    repository: widget.repository,
-                  ))),
-          child: Icon(Icons.add)),
     );
   }
 }

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:recipes/recipe_form/recipe_form.dart';
 import 'package:recipes/store/recipe_repository.dart';
 
 class AddRecipeScreen extends StatelessWidget {
-  final RecipeRepository repository;
-
-  AddRecipeScreen({Key key, this.repository}) : super(key: key);
+  AddRecipeScreen({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    var repository = Provider.of<RecipeRepository>(context);
+
     return Scaffold(
       appBar: AppBar(title: Text('Add Recipe')),
       body: SizedBox.expand(

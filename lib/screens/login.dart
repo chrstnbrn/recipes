@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:recipes/providers/auth_provider.dart';
 
-import 'package:recipes/screens/recipes.dart';
-import 'package:recipes/theme/style.dart';
-
 class Login extends StatefulWidget {
   @override
   _LoginState createState() => _LoginState();
@@ -38,14 +35,7 @@ class _LoginState extends State<Login> {
       splashColor: Colors.grey,
       onPressed: () {
         authProvider.signInWithGoogle().then((value) {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) {
-                return MaterialApp(
-                    title: 'Recipes', theme: appTheme(), home: Recipes());
-              },
-            ),
-          );
+          Navigator.pop(context);
         }).catchError((error) {
           print(error);
         });
