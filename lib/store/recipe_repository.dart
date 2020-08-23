@@ -29,10 +29,7 @@ class RecipeRepository {
     return recipeDatabase.child(recipe.id).update(recipe.toJson());
   }
 
-  // Future<void> deleteRecipe(List<String> idList) async {
-  //   await Future.wait<void>(idList.map((id) {
-  //     return firestore.collection(path).document(id).delete();
-  //   }));
-  // }
-
+  Future<void> deleteRecipe(String id) {
+    return recipeDatabase.child(id).remove();
+  }
 }

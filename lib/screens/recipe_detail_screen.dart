@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:recipes/routes.dart';
+import 'package:recipes/store/recipe_repository.dart';
 import 'package:recipes/widgets/checkable_text.dart';
 
 import '../models/recipe.dart';
@@ -11,6 +13,8 @@ class RecipeDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var repository = Provider.of<RecipeRepository>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(recipe.name),
@@ -19,7 +23,19 @@ class RecipeDetailScreen extends StatelessWidget {
             icon: Icon(Icons.edit),
             onPressed: () => Navigator.pushNamed(context, Routes.editRecipe,
                 arguments: {"recipe": recipe}),
-          )
+          ),
+          IconButton(
+              icon: Icon(Icons.delete),
+              onPressed: () => showDialog(
+                    context: context,
+                    builder: (context) => _buildConfirmDeletionDialog(
+                      onConfirm: () async {
+                        await repository.deleteRecipe(recipe.id);
+                        Navigator.of(context)..pop()..pop();
+                      },
+                      onCancel: () => Navigator.of(context).pop(),
+                    ),
+                  ))
         ],
       ),
       body: Padding(
@@ -54,5 +70,22 @@ class RecipeDetailScreen extends StatelessWidget {
             return Text("");
           }
         });
+  }
+
+  Widget _buildConfirmDeletionDialog(
+      {@required Function onConfirm, @required Function onCancel}) {
+    return AlertDialog(
+      title: Text("Delete recipe?"),
+      actions: [
+        FlatButton(
+          child: Text("Cancel"),
+          onPressed: onCancel,
+        ),
+        FlatButton(
+          child: Text('Delete'),
+          onPressed: onConfirm,
+        ),
+      ],
+    );
   }
 }
