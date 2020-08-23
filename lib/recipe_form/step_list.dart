@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_reorderable_list/flutter_reorderable_list.dart';
@@ -65,37 +66,34 @@ class StepListState extends State<StepList> {
   DraggingMode _draggingMode = DraggingMode.iOS;
 
   Widget _buildSteps() {
-    return ReorderableList(
-      onReorder: this._reorderCallback,
-      child: CustomScrollView(
-        shrinkWrap: true,
-        slivers: <Widget>[
-          SliverPadding(
-              padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).padding.bottom,
-              ),
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (BuildContext context, int index) {
-                    return Item(
-                      key: ObjectKey(widget.steps[index]),
-                      data: widget.steps[index],
-                      isFirst: index == 0,
-                      isLast: index == widget.steps.length - 1,
-                      draggingMode: _draggingMode,
-                      onEdit: (step) => showDialog(
-                          context: context,
-                          builder: (context) => _buildEditStepDialog(step)),
-                      onDelete: (step) => showDialog(
-                          context: context,
-                          builder: (context) => _buildDeleteStepDialog(step)),
-                    );
-                  },
-                  childCount: widget.steps.length,
-                ),
-              )),
-        ],
-      ),
+    return Row(
+      children: [
+        Expanded(
+          child: ReorderableList(
+            onReorder: this._reorderCallback,
+            child: ListView.builder(
+              shrinkWrap: true,
+              primary: false,
+              itemBuilder: (context, index) {
+                return Item(
+                  key: ObjectKey(widget.steps[index]),
+                  data: widget.steps[index],
+                  isFirst: index == 0,
+                  isLast: index == widget.steps.length - 1,
+                  draggingMode: _draggingMode,
+                  onEdit: (step) => showDialog(
+                      context: context,
+                      builder: (context) => _buildEditStepDialog(step)),
+                  onDelete: (step) => showDialog(
+                      context: context,
+                      builder: (context) => _buildDeleteStepDialog(step)),
+                );
+              },
+              itemCount: widget.steps.length,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
