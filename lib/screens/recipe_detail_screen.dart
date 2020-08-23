@@ -7,14 +7,25 @@ import 'package:recipes/widgets/checkable_text.dart';
 import '../models/recipe.dart';
 
 class RecipeDetailScreen extends StatelessWidget {
-  RecipeDetailScreen({Key key, this.recipe}) : super(key: key);
+  RecipeDetailScreen({Key key, this.recipeId}) : super(key: key);
 
-  final Recipe recipe;
+  final String recipeId;
 
   @override
   Widget build(BuildContext context) {
     var repository = Provider.of<RecipeRepository>(context);
 
+    return StreamBuilder<Recipe>(
+        stream: repository.recipe(recipeId),
+        builder: (context, snapshot) {
+          if (snapshot.hasData)
+            return _buildContent(snapshot.data, context, repository);
+          return CircularProgressIndicator();
+        });
+  }
+
+  Widget _buildContent(
+      Recipe recipe, BuildContext context, RecipeRepository repository) {
     return Scaffold(
       appBar: AppBar(
         title: Text(recipe.name),

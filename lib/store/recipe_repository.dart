@@ -21,6 +21,13 @@ class RecipeRepository {
     });
   }
 
+  Stream<Recipe> recipe(String id) {
+    return recipeDatabase.child(id).onValue.map((event) {
+      var recipe = jsonDecode(jsonEncode(event.snapshot.value));
+      return Recipe.fromJson(id, recipe);
+    });
+  }
+
   Future<void> addRecipe(Recipe recipe) {
     return recipeDatabase.push().set(recipe.toJson());
   }

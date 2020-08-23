@@ -24,7 +24,7 @@ class Router {
       case Routes.editRecipe:
         return EditRecipeScreen(recipe: arguments["recipe"]);
       case Routes.recipe:
-        return RecipeDetailScreen(recipe: arguments["recipe"]);
+        return RecipeDetailScreen(recipeId: arguments["recipeId"]);
       default:
         return Routes.login;
     }

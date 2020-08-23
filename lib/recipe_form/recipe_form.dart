@@ -30,7 +30,7 @@ class RecipeFormState extends State<RecipeForm> {
             _buildServingsField(),
             IngredientList(widget.recipe.ingredients),
             StepList(widget.recipe.steps),
-            _buildSubmitButton(context)
+            _buildSubmitButton(context),
           ],
         ));
   }
@@ -55,18 +55,16 @@ class RecipeFormState extends State<RecipeForm> {
   Widget _buildSubmitButton(BuildContext context) {
     return Row(children: <Widget>[
       Expanded(
-          child: RaisedButton(
-        onPressed: () {
-          if (_formKey.currentState.validate()) {
-            _formKey.currentState.save();
-            print(widget.recipe.toJson());
-            Scaffold.of(context)
-                .showSnackBar(SnackBar(content: Text('Processing Data')));
-            widget.onSubmit(widget.recipe);
-          }
-        },
-        child: Text('Submit'),
-      ))
+        child: RaisedButton(
+          onPressed: () {
+            if (_formKey.currentState.validate()) {
+              _formKey.currentState.save();
+              widget.onSubmit(widget.recipe);
+            }
+          },
+          child: Text('Submit'),
+        ),
+      ),
     ]);
   }
 }
