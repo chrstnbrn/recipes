@@ -1,10 +1,8 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_reorderable_list/flutter_reorderable_list.dart';
-
 import 'package:recipes/models/recipe.dart';
 import 'package:recipes/recipe_form/step_form.dart';
+import 'package:recipes/widgets/draggable_list.dart';
 
 class StepList extends StatefulWidget {
   final List<RecipeStep> steps;
@@ -13,11 +11,6 @@ class StepList extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() => StepListState();
-}
-
-enum DraggingMode {
-  iOS,
-  Android,
 }
 
 class StepListState extends State<StepList> {
@@ -45,55 +38,36 @@ class StepListState extends State<StepList> {
     );
   }
 
-  int _indexOfKey(Key key) {
-    return widget.steps.indexWhere((element) => ObjectKey(element) == key);
-  }
-
-  bool _reorderCallback(Key item, Key newPosition) {
-    int draggingIndex = _indexOfKey(item);
-    int newPositionIndex = _indexOfKey(newPosition);
-
-    final draggedItem = widget.steps[draggingIndex];
-
-    setState(() {
-      this.widget.steps.removeAt(draggingIndex);
-      this.widget.steps.insert(newPositionIndex, draggedItem);
-    });
-
-    return true;
-  }
-
-  DraggingMode _draggingMode = DraggingMode.iOS;
-
   Widget _buildSteps() {
-    return Row(
-      children: [
-        Expanded(
-          child: ReorderableList(
-            onReorder: this._reorderCallback,
-            child: ListView.builder(
-              shrinkWrap: true,
-              primary: false,
-              itemBuilder: (context, index) {
-                return Item(
-                  key: ObjectKey(widget.steps[index]),
-                  data: widget.steps[index],
-                  isFirst: index == 0,
-                  isLast: index == widget.steps.length - 1,
-                  draggingMode: _draggingMode,
-                  onEdit: (step) => showDialog(
-                      context: context,
-                      builder: (context) => _buildEditStepDialog(step)),
-                  onDelete: (step) => showDialog(
-                      context: context,
-                      builder: (context) => _buildDeleteStepDialog(step)),
-                );
-              },
-              itemCount: widget.steps.length,
+    return DraggableList(
+      items: widget.steps,
+      itemBuilder: (context, step) {
+        return Row(
+          children: [
+            Expanded(
+              child: Text(
+                step.description,
+                style: Theme.of(context).textTheme.subtitle1,
+              ),
+              flex: 1,
             ),
-          ),
-        ),
-      ],
+            Row(mainAxisSize: MainAxisSize.min, children: [
+              new IconButton(
+                icon: new Icon(Icons.edit),
+                onPressed: () => showDialog(
+                    context: context,
+                    builder: (context) => _buildEditStepDialog(step)),
+              ),
+              new IconButton(
+                icon: new Icon(Icons.delete),
+                onPressed: () => showDialog(
+                    context: context,
+                    builder: (context) => _buildDeleteStepDialog(step)),
+              ),
+            ]),
+          ],
+        );
+      },
     );
   }
 
@@ -152,131 +126,6 @@ class StepListState extends State<StepList> {
             Navigator.of(context).pop();
           },
         ),
-      ],
-    );
-  }
-}
-
-class Item extends StatelessWidget {
-  Item({
-    @required this.key,
-    this.data,
-    this.isFirst,
-    this.isLast,
-    this.draggingMode,
-    this.onEdit,
-    this.onDelete,
-  });
-
-  final Key key;
-  final RecipeStep data;
-  final bool isFirst;
-  final bool isLast;
-  final DraggingMode draggingMode;
-  final Function(RecipeStep step) onEdit;
-  final Function(RecipeStep step) onDelete;
-
-  Widget _buildChild(BuildContext context, ReorderableItemState state) {
-    BoxDecoration decoration;
-
-    if (state == ReorderableItemState.dragProxy ||
-        state == ReorderableItemState.dragProxyFinished) {
-      // slightly transparent background white dragging (just like on iOS)
-      decoration = BoxDecoration(color: Color(0xD0FFFFFF));
-    } else {
-      bool placeholder = state == ReorderableItemState.placeholder;
-      decoration = BoxDecoration(
-          border: Border(
-              top: isFirst && !placeholder
-                  ? Divider.createBorderSide(context) //
-                  : BorderSide.none,
-              bottom: isLast && placeholder
-                  ? BorderSide.none //
-                  : Divider.createBorderSide(context)),
-          color: placeholder ? null : Colors.white);
-    }
-
-    // For iOS dragging mode, there will be drag handle on the right that triggers
-    // reordering; For android mode it will be just an empty container
-    Widget dragHandle = draggingMode == DraggingMode.iOS
-        ? ReorderableListener(
-            child: Container(
-              padding: EdgeInsets.only(right: 18.0, left: 18.0),
-              color: Color(0x08000000),
-              child: Center(
-                child: Icon(Icons.reorder, color: Color(0xFF888888)),
-              ),
-            ),
-          )
-        : Container();
-
-    Widget content = Container(
-      decoration: decoration,
-      child: SafeArea(
-          top: false,
-          bottom: false,
-          child: Opacity(
-            // hide content for placeholder
-            opacity: state == ReorderableItemState.placeholder ? 0.0 : 1.0,
-            child: IntrinsicHeight(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        vertical: 14.0,
-                        horizontal: 14.0,
-                      ),
-                      child: _buildStep(data, context),
-                    ),
-                  ),
-                  // Triggers the reordering
-                  dragHandle,
-                ],
-              ),
-            ),
-          )),
-    );
-
-    // For android dragging mode, wrap the entire content in DelayedReorderableListener
-    if (draggingMode == DraggingMode.Android) {
-      content = DelayedReorderableListener(
-        child: content,
-      );
-    }
-
-    return content;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ReorderableItem(
-      key: key,
-      childBuilder: _buildChild,
-    );
-  }
-
-  Widget _buildStep(RecipeStep step, BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Text(
-            data.description,
-            style: Theme.of(context).textTheme.subtitle1,
-          ),
-          flex: 1,
-        ),
-        Row(mainAxisSize: MainAxisSize.min, children: [
-          new IconButton(
-            icon: new Icon(Icons.edit),
-            onPressed: () => this.onEdit(step),
-          ),
-          new IconButton(
-            icon: new Icon(Icons.delete),
-            onPressed: () => this.onDelete(step),
-          ),
-        ]),
       ],
     );
   }

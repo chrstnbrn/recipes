@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:recipes/models/recipe.dart';
+import 'package:recipes/widgets/draggable_list.dart';
 
 import 'ingredient_form.dart';
 
@@ -22,7 +23,7 @@ class IngredientListState extends State<IngredientList> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             _buildIngredientsHeader(),
-            ...this.widget.ingredients.map((i) => _buildIngredient(i)),
+            _buildIngredientList(),
             _buildAddIngredientButton()
           ],
         ));
@@ -30,6 +31,15 @@ class IngredientListState extends State<IngredientList> {
 
   Widget _buildIngredientsHeader() {
     return Text('Ingredients', style: Theme.of(context).textTheme.headline5);
+  }
+
+  Widget _buildIngredientList() {
+    return DraggableList(
+      items: widget.ingredients,
+      itemBuilder: (context, ingredient) {
+        return _buildIngredient(ingredient);
+      },
+    );
   }
 
   Widget _buildIngredient(RecipeIngredient ingredient) {
