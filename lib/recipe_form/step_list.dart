@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_reorderable_list/flutter_reorderable_list.dart';
+
 import 'package:recipes/models/recipe.dart';
 import 'package:recipes/recipe_form/step_form.dart';
-
-import 'package:flutter_reorderable_list/flutter_reorderable_list.dart';
 
 class StepList extends StatefulWidget {
   final List<RecipeStep> steps;
@@ -11,14 +11,7 @@ class StepList extends StatefulWidget {
   StepList(this.steps);
 
   @override
-  State<StatefulWidget> createState() => StepListState(steps);
-}
-
-class StepItem {
-  StepItem(this.key, this.step);
-
-  final Key key;
-  final RecipeStep step;
+  State<StatefulWidget> createState() => StepListState();
 }
 
 enum DraggingMode {
@@ -27,77 +20,68 @@ enum DraggingMode {
 }
 
 class StepListState extends State<StepList> {
-  List<StepItem> _items;
-
-  StepListState(List<RecipeStep> steps) {
-    _items =
-        steps.map((step) => StepItem(Key(step.description), step)).toList();
-  }
-
   @override
   Widget build(BuildContext context) {
-    //return _buildSteps();
     return Padding(
-        padding: EdgeInsets.only(top: 32, bottom: 32),
-        child: Container(
-            //height: 1000,
-            child: Column(
+      padding: EdgeInsets.only(top: 32, bottom: 32),
+      child: Container(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             _buildStepsHeader(),
             _buildSteps(),
-            _buildAddStepButton()
+            _buildAddStepButton(),
           ],
-        )));
+        ),
+      ),
+    );
   }
 
   Widget _buildStepsHeader() {
-    return Text('Steps', style: Theme.of(context).textTheme.headline5);
+    return Text(
+      'Steps',
+      style: Theme.of(context).textTheme.headline5,
+    );
   }
 
   int _indexOfKey(Key key) {
-    return this._items.indexWhere((d) => d.key == key);
+    return widget.steps.indexWhere((element) => ObjectKey(element) == key);
   }
 
   bool _reorderCallback(Key item, Key newPosition) {
     int draggingIndex = _indexOfKey(item);
     int newPositionIndex = _indexOfKey(newPosition);
 
-    final draggedItem = _items[draggingIndex];
+    final draggedItem = widget.steps[draggingIndex];
+
     setState(() {
-      debugPrint("Reordering $item -> $newPosition");
-      _removeAt(draggingIndex);
-      _insertAt(newPositionIndex, draggedItem);
+      this.widget.steps.removeAt(draggingIndex);
+      this.widget.steps.insert(newPositionIndex, draggedItem);
     });
+
     return true;
   }
 
-  void _reorderDone(Key item) {
-    final draggedItem = _items[_indexOfKey(item)];
-    debugPrint("Reordering finished for ${draggedItem.step.description}}");
-  }
-
-  DraggingMode _draggingMode = DraggingMode.Android;
+  DraggingMode _draggingMode = DraggingMode.iOS;
 
   Widget _buildSteps() {
     return ReorderableList(
       onReorder: this._reorderCallback,
-      onReorderDone: this._reorderDone,
       child: CustomScrollView(
         shrinkWrap: true,
-        // cacheExtent: 3000,
         slivers: <Widget>[
           SliverPadding(
               padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).padding.bottom),
+                bottom: MediaQuery.of(context).padding.bottom,
+              ),
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (BuildContext context, int index) {
                     return Item(
-                      data: _items[index],
-                      // first and last attributes affect border drawn during dragging
+                      key: ObjectKey(widget.steps[index]),
+                      data: widget.steps[index],
                       isFirst: index == 0,
-                      isLast: index == _items.length - 1,
+                      isLast: index == widget.steps.length - 1,
                       draggingMode: _draggingMode,
                       onEdit: (step) => showDialog(
                           context: context,
@@ -107,7 +91,7 @@ class StepListState extends State<StepList> {
                           builder: (context) => _buildDeleteStepDialog(step)),
                     );
                   },
-                  childCount: _items.length,
+                  childCount: widget.steps.length,
                 ),
               )),
         ],
@@ -117,43 +101,27 @@ class StepListState extends State<StepList> {
 
   Widget _buildAddStepButton() {
     return OutlineButton.icon(
-        icon: Icon(Icons.add),
-        label: Text('Add Step'),
-        onPressed: () => showDialog(
-            context: context, builder: (context) => _buildAddStepDialog()));
+      icon: Icon(Icons.add),
+      label: Text('Add Step'),
+      onPressed: () => showDialog(
+        context: context,
+        builder: (context) => _buildAddStepDialog(),
+      ),
+    );
   }
 
   Widget _buildAddStepDialog() {
     return AlertDialog(
       title: Text('Add step'),
       content: StepForm(
-          step: new RecipeStep(),
-          onSubmit: (step) {
-            setState(() {
-              _addStep(step);
-            });
-          }),
+        step: new RecipeStep(),
+        onSubmit: (step) {
+          setState(() {
+            this.widget.steps.add(step);
+          });
+        },
+      ),
     );
-  }
-
-  void _addStep(RecipeStep step) {
-    this.widget.steps.add(step);
-    this._items.add(new StepItem(Key(step.description), step));
-  }
-
-  void _insertAt(int newPositionIndex, StepItem item) {
-    this.widget.steps.insert(newPositionIndex, item.step);
-    _items.insert(newPositionIndex, item);
-  }
-
-  void _removeAt(int index) {
-    this.widget.steps.removeAt(index);
-    _items.removeAt(index);
-  }
-
-  void _deleteStep(RecipeStep step) {
-    this.widget.steps.remove(step);
-    this._items.removeWhere((element) => element.step == step);
   }
 
   Widget _buildEditStepDialog(RecipeStep step) {
@@ -181,11 +149,11 @@ class StepListState extends State<StepList> {
           color: Theme.of(context).errorColor,
           onPressed: () {
             setState(() {
-              this._deleteStep(step);
+              this.widget.steps.remove(step);
             });
             Navigator.of(context).pop();
           },
-        )
+        ),
       ],
     );
   }
@@ -193,6 +161,7 @@ class StepListState extends State<StepList> {
 
 class Item extends StatelessWidget {
   Item({
+    @required this.key,
     this.data,
     this.isFirst,
     this.isLast,
@@ -201,7 +170,8 @@ class Item extends StatelessWidget {
     this.onDelete,
   });
 
-  final StepItem data;
+  final Key key;
+  final RecipeStep data;
   final bool isFirst;
   final bool isLast;
   final DraggingMode draggingMode;
@@ -253,13 +223,16 @@ class Item extends StatelessWidget {
             child: IntrinsicHeight(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
+                children: [
                   Expanded(
-                      child: Padding(
-                    padding:
-                        EdgeInsets.symmetric(vertical: 14.0, horizontal: 14.0),
-                    child: _buildStep(data.step, context),
-                  )),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        vertical: 14.0,
+                        horizontal: 14.0,
+                      ),
+                      child: _buildStep(data, context),
+                    ),
+                  ),
                   // Triggers the reordering
                   dragHandle,
                 ],
@@ -281,8 +254,9 @@ class Item extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ReorderableItem(
-        key: data.key, //
-        childBuilder: _buildChild);
+      key: key,
+      childBuilder: _buildChild,
+    );
   }
 
   Widget _buildStep(RecipeStep step, BuildContext context) {
@@ -290,17 +264,20 @@ class Item extends StatelessWidget {
       children: [
         Expanded(
           child: Text(
-            data.step.description,
+            data.description,
             style: Theme.of(context).textTheme.subtitle1,
           ),
           flex: 1,
         ),
         Row(mainAxisSize: MainAxisSize.min, children: [
           new IconButton(
-              icon: new Icon(Icons.edit), onPressed: () => this.onEdit(step)),
+            icon: new Icon(Icons.edit),
+            onPressed: () => this.onEdit(step),
+          ),
           new IconButton(
-              icon: new Icon(Icons.delete),
-              onPressed: () => this.onDelete(step))
+            icon: new Icon(Icons.delete),
+            onPressed: () => this.onDelete(step),
+          ),
         ]),
       ],
     );
