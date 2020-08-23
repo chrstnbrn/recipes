@@ -46,7 +46,7 @@ class RecipeFormState extends State<RecipeForm> {
 
   Widget _buildServingsField() {
     return TouchSpinFormField(
-      initialValue: 2,
+      initialValue: widget.recipe.servings,
       decoration: InputDecoration(labelText: "Servings"),
       onSaved: (value) => widget.recipe.servings = value,
     );
