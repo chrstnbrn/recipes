@@ -36,27 +36,36 @@ class IngredientListState extends State<IngredientList> {
   Widget _buildIngredientList() {
     return DraggableList(
       items: widget.ingredients,
-      itemBuilder: (context, ingredient) {
-        return _buildIngredient(ingredient);
-      },
+      itemBuilder: _buildIngredient,
+      swipeToDelete: true,
+      onDelete: _showUndoDeleteIngredientSnackBar,
     );
   }
 
-  Widget _buildIngredient(RecipeIngredient ingredient) {
-    return ListTile(
-      title: Text(ingredient.toString()),
-      trailing: new Row(mainAxisSize: MainAxisSize.min, children: [
-        new IconButton(
-            icon: new Icon(Icons.edit),
-            onPressed: () => showDialog(
-                context: context,
-                builder: (context) => _buildEditIngredientDialog(ingredient))),
-        new IconButton(
-            icon: new Icon(Icons.delete),
-            onPressed: () => showDialog(
-                context: context,
-                builder: (context) => _buildDeleteIngredientDialog(ingredient)))
-      ]),
+  void _showUndoDeleteIngredientSnackBar(
+    RecipeIngredient ingredient,
+    int index,
+  ) {
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        content: Text("Deleted ingredient \"${ingredient.toString()}\""),
+        action: SnackBarAction(
+          label: "UNDO",
+          onPressed: () {
+            setState(() => widget.ingredients.insert(index, ingredient));
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildIngredient(BuildContext context, RecipeIngredient ingredient) {
+    return InkWell(
+      child: Text(ingredient.toString()),
+      onTap: () => showDialog(
+        context: context,
+        child: _buildEditIngredientDialog(ingredient),
+      ),
     );
   }
 

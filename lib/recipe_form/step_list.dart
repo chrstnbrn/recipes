@@ -43,18 +43,21 @@ class StepListState extends State<StepList> {
       items: widget.steps,
       itemBuilder: _buildStep,
       swipeToDelete: true,
-      onDelete: (RecipeStep step, int index) {
-        Scaffold.of(context).showSnackBar(
-          SnackBar(
-              content: Text("Deleted step \"${step.description}\""),
-              action: SnackBarAction(
-                label: "UNDO",
-                onPressed: () {
-                  setState(() => widget.steps.insert(index, step));
-                },
-              )),
-        );
-      },
+      onDelete: _showUndoDeleteStepSnackBar,
+    );
+  }
+
+  void _showUndoDeleteStepSnackBar(RecipeStep step, int index) {
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        content: Text("Deleted step \"${step.description}\""),
+        action: SnackBarAction(
+          label: "UNDO",
+          onPressed: () {
+            setState(() => widget.steps.insert(index, step));
+          },
+        ),
+      ),
     );
   }
 
