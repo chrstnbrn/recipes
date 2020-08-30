@@ -61,7 +61,10 @@ class IngredientListState extends State<IngredientList> {
 
   Widget _buildIngredient(BuildContext context, RecipeIngredient ingredient) {
     return InkWell(
-      child: Text(ingredient.toString()),
+      child: Text(
+        ingredient.toString(),
+        style: Theme.of(context).textTheme.subtitle1,
+      ),
       onTap: () => showDialog(
         context: context,
         child: _buildEditIngredientDialog(ingredient),

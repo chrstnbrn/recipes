@@ -34,7 +34,7 @@ class _DraggableListState<T> extends State<DraggableList<T>> {
           child: ReorderableList(
             onReorder: _reorderCallback,
             child: ListView.builder(
-              padding: EdgeInsets.all(0),
+              padding: EdgeInsets.symmetric(vertical: 16),
               shrinkWrap: true,
               primary: false,
               itemBuilder: (context, index) {
@@ -109,67 +109,37 @@ class DraggableListItem extends StatelessWidget {
   }
 
   Widget _buildChild(BuildContext context, ReorderableItemState state) {
-    BoxDecoration decoration;
-
-    if (state == ReorderableItemState.dragProxy ||
-        state == ReorderableItemState.dragProxyFinished) {
-      // slightly transparent background white dragging (just like on iOS)
-      decoration = BoxDecoration(color: Color(0xD0FFFFFF));
-    } else {
-      bool placeholder = state == ReorderableItemState.placeholder;
-      decoration = BoxDecoration(
-          border: Border(
-              top: isFirst && !placeholder
-                  ? Divider.createBorderSide(context)
-                  : BorderSide.none,
-              bottom: isLast && placeholder
-                  ? BorderSide.none
-                  : Divider.createBorderSide(context)),
-          color: placeholder ? null : Colors.white);
-    }
-
-    // For iOS dragging mode, there will be drag handle on the right that triggers
-    // reordering; For android mode it will be just an empty container
-    Widget dragHandle = draggingMode == DraggingMode.iOS
-        ? ReorderableListener(
-            child: Container(
-              padding: EdgeInsets.only(left: 4),
-              child: Center(
-                child: Icon(
-                  Icons.drag_handle,
-                  color: Colors.grey[600],
-                ),
-              ),
-            ),
-          )
-        : Container();
-
     Widget content = Container(
-      decoration: decoration,
+      decoration: _buildDecoration(state, context),
       child: SafeArea(
-          top: false,
-          bottom: false,
-          child: Opacity(
-            // hide content for placeholder
-            opacity: state == ReorderableItemState.placeholder ? 0.0 : 1.0,
-            child: IntrinsicHeight(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  dragHandle,
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        vertical: 14.0,
-                        horizontal: 14.0,
-                      ),
-                      child: itemBuilder(context),
+        top: false,
+        bottom: false,
+        child: Opacity(
+          // hide content for placeholder
+          opacity: state == ReorderableItemState.placeholder ? 0.0 : 1.0,
+          child: IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // For iOS dragging mode, there will be drag handle on the right that triggers
+                // reordering; For android mode it will be just an empty container
+                draggingMode == DraggingMode.iOS
+                    ? _buildDragHandle()
+                    : Container(),
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: 14.0,
+                      horizontal: 14.0,
                     ),
+                    child: itemBuilder(context),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          )),
+          ),
+        ),
+      ),
     );
 
     // For android dragging mode, wrap the entire content in DelayedReorderableListener
@@ -185,9 +155,12 @@ class DraggableListItem extends StatelessWidget {
         child: content,
         direction: DismissDirection.endToStart,
         background: Container(
-          color: Theme.of(context).selectedRowColor,
+          decoration: BoxDecoration(
+            border: _buildBorder(context: context),
+            color: Theme.of(context).selectedRowColor,
+          ),
           alignment: Alignment.centerRight,
-          padding: EdgeInsets.all(16),
+          padding: EdgeInsets.only(right: 16),
           child: Icon(Icons.delete),
         ),
         onDismissed: (direction) => onDelete(),
@@ -195,5 +168,54 @@ class DraggableListItem extends StatelessWidget {
     }
 
     return content;
+  }
+
+  ReorderableListener _buildDragHandle() {
+    return ReorderableListener(
+      child: Container(
+        padding: EdgeInsets.only(left: 4),
+        child: Center(
+          child: Icon(
+            Icons.drag_handle,
+            color: Colors.grey[600],
+          ),
+        ),
+      ),
+    );
+  }
+
+  BoxDecoration _buildDecoration(
+    ReorderableItemState state,
+    BuildContext context,
+  ) {
+    switch (state) {
+      case ReorderableItemState.dragProxy:
+      case ReorderableItemState.dragProxyFinished:
+        return BoxDecoration(
+          color: Colors.white.withOpacity(0.85),
+          border: _buildBorder(context: context, color: Colors.transparent),
+        );
+
+      case ReorderableItemState.placeholder:
+      case ReorderableItemState.normal:
+        return BoxDecoration(
+          color: Colors.white,
+          border: _buildBorder(context: context),
+        );
+
+      default:
+        throw new ArgumentError("Invalid ReorderableItemState $state");
+    }
+  }
+
+  Border _buildBorder({@required BuildContext context, Color color}) {
+    final border = Divider.createBorderSide(context, width: 1).copyWith(
+      color: color,
+    );
+
+    return Border(
+      top: isFirst ? border : BorderSide.none,
+      bottom: border,
+    );
   }
 }
