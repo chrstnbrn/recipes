@@ -84,6 +84,14 @@ class DraggableListItem extends StatelessWidget {
   final bool isLast;
   final DraggingMode draggingMode;
 
+  @override
+  Widget build(BuildContext context) {
+    return ReorderableItem(
+      key: key,
+      childBuilder: _buildChild,
+    );
+  }
+
   Widget _buildChild(BuildContext context, ReorderableItemState state) {
     BoxDecoration decoration;
 
@@ -109,8 +117,7 @@ class DraggableListItem extends StatelessWidget {
     Widget dragHandle = draggingMode == DraggingMode.iOS
         ? ReorderableListener(
             child: Container(
-              padding: EdgeInsets.only(right: 18.0, left: 18.0),
-              color: Color(0x08000000),
+              padding: EdgeInsets.only(left: 4),
               child: Center(
                 child: Icon(Icons.reorder, color: Color(0xFF888888)),
               ),
@@ -130,6 +137,7 @@ class DraggableListItem extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  dragHandle,
                   Expanded(
                     child: Padding(
                       padding: EdgeInsets.symmetric(
@@ -139,8 +147,6 @@ class DraggableListItem extends StatelessWidget {
                       child: itemBuilder(context),
                     ),
                   ),
-                  // Triggers the reordering
-                  dragHandle,
                 ],
               ),
             ),
@@ -155,13 +161,5 @@ class DraggableListItem extends StatelessWidget {
     }
 
     return content;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ReorderableItem(
-      key: key,
-      childBuilder: _buildChild,
-    );
   }
 }
