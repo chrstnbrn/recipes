@@ -33,6 +33,10 @@ class EditRecipeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit Recipe'),
+        leading: IconButton(
+          icon: Icon(Icons.close),
+          onPressed: () => Navigator.maybePop(context),
+        ),
         actions: [
           IconButton(
             icon: Icon(Icons.check),

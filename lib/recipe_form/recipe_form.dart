@@ -22,6 +22,7 @@ class RecipeFormState extends State<RecipeForm> {
   Widget build(BuildContext context) {
     return Form(
         key: _formKey,
+        onWillPop: () => _showConfirmDiscardDialog(context),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -31,6 +32,26 @@ class RecipeFormState extends State<RecipeForm> {
             StepList(widget.recipe.steps),
           ],
         ));
+  }
+
+  Future<bool> _showConfirmDiscardDialog(BuildContext context) {
+    return showDialog(
+      context: context,
+      child: new AlertDialog(
+        title: new Text('Discard changes?'),
+        content: new Text('Unsaved data will be lost.'),
+        actions: <Widget>[
+          new FlatButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: new Text('Cancel'),
+          ),
+          new FlatButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: new Text('Discard'),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildRecipeNameField() {
