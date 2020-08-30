@@ -5,13 +5,29 @@ import 'package:recipes/recipe_form/recipe_form.dart';
 import 'package:recipes/store/recipe_repository.dart';
 
 class EditRecipeScreen extends StatelessWidget {
-  final Recipe recipe;
+  final String recipeId;
 
-  EditRecipeScreen({Key key, @required this.recipe}) : super(key: key);
+  EditRecipeScreen({Key key, @required this.recipeId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     var repository = Provider.of<RecipeRepository>(context);
+
+    return FutureBuilder(
+      future: repository.recipe(recipeId).first,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) return Container();
+
+        return _buildContent(context, repository, snapshot.data);
+      },
+    );
+  }
+
+  Scaffold _buildContent(
+    BuildContext context,
+    RecipeRepository repository,
+    Recipe recipe,
+  ) {
     final formKey = GlobalKey<RecipeFormState>();
 
     return Scaffold(

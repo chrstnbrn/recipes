@@ -22,7 +22,7 @@ class Router {
       case Routes.addRecipe:
         return AddRecipeScreen();
       case Routes.editRecipe:
-        return EditRecipeScreen(recipe: arguments["recipe"]);
+        return EditRecipeScreen(recipeId: arguments["recipeId"]);
       case Routes.recipe:
         return RecipeDetailScreen(recipeId: arguments["recipeId"]);
       default:

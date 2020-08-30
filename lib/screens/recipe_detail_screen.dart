@@ -32,25 +32,31 @@ class RecipeDetailScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: Icon(Icons.edit),
-            onPressed: () => Navigator.pushNamed(context, Routes.editRecipe,
-                arguments: {"recipe": recipe}),
+            onPressed: () => Navigator.pushNamed(
+              context,
+              Routes.editRecipe,
+              arguments: {"recipeId": recipe.id},
+            ),
           ),
           IconButton(
-              icon: Icon(Icons.delete),
-              onPressed: () => showDialog(
-                    context: context,
-                    builder: (context) => _buildConfirmDeletionDialog(
-                      onConfirm: () async {
-                        await repository.deleteRecipe(recipe.id);
-                        Navigator.of(context)..pop()..pop();
-                      },
-                      onCancel: () => Navigator.of(context).pop(),
-                    ),
-                  ))
+            icon: Icon(Icons.delete),
+            onPressed: () => showDialog(
+              context: context,
+              builder: (context) => _buildConfirmDeletionDialog(
+                onConfirm: () async {
+                  await repository.deleteRecipe(recipe.id);
+                  Navigator.of(context)..pop()..pop();
+                },
+                onCancel: () => Navigator.of(context).pop(),
+              ),
+            ),
+          ),
         ],
       ),
       body: Padding(
-          padding: EdgeInsets.all(16.0), child: _buildRecipeDetail(recipe)),
+        padding: EdgeInsets.all(16.0),
+        child: _buildRecipeDetail(recipe),
+      ),
     );
   }
 
