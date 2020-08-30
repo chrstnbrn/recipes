@@ -8,9 +8,8 @@ import 'step_list.dart';
 
 class RecipeForm extends StatefulWidget {
   final Recipe recipe;
-  final ValueChanged<Recipe> onSubmit;
 
-  RecipeForm({@required this.recipe, @required this.onSubmit});
+  RecipeForm({Key key, @required this.recipe}) : super(key: key);
 
   @override
   RecipeFormState createState() => RecipeFormState();
@@ -30,7 +29,6 @@ class RecipeFormState extends State<RecipeForm> {
             _buildServingsField(),
             IngredientList(widget.recipe.ingredients),
             StepList(widget.recipe.steps),
-            _buildSubmitButton(context),
           ],
         ));
   }
@@ -52,19 +50,11 @@ class RecipeFormState extends State<RecipeForm> {
     );
   }
 
-  Widget _buildSubmitButton(BuildContext context) {
-    return Row(children: <Widget>[
-      Expanded(
-        child: RaisedButton(
-          onPressed: () {
-            if (_formKey.currentState.validate()) {
-              _formKey.currentState.save();
-              widget.onSubmit(widget.recipe);
-            }
-          },
-          child: Text('Submit'),
-        ),
-      ),
-    ]);
+  Recipe submit() {
+    if (_formKey.currentState.validate()) {
+      _formKey.currentState.save();
+      return widget.recipe;
+    }
+    return null;
   }
 }

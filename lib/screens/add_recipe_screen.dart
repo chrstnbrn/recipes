@@ -10,23 +10,39 @@ class AddRecipeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var repository = Provider.of<RecipeRepository>(context);
+    final formKey = GlobalKey<RecipeFormState>();
 
     return Scaffold(
-      appBar: AppBar(title: Text('Add Recipe')),
+      appBar: AppBar(
+        title: Text('Add Recipe'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.check),
+            onPressed: () {
+              var recipe = formKey.currentState.submit();
+              if (recipe != null) {
+                repository.addRecipe(recipe);
+                Navigator.pop(context);
+              }
+            },
+          ),
+        ],
+      ),
       body: SizedBox.expand(
-          child: SingleChildScrollView(
-              padding: EdgeInsets.all(16.0),
-              child: RecipeForm(
-                  recipe: new Recipe(
-                      id: null,
-                      name: "",
-                      servings: 2,
-                      ingredients: [],
-                      steps: []),
-                  onSubmit: (recipe) {
-                    repository.addRecipe(recipe);
-                    Navigator.of(context).pop();
-                  }))),
+        child: SingleChildScrollView(
+          padding: EdgeInsets.all(16.0),
+          child: RecipeForm(
+            key: formKey,
+            recipe: new Recipe(
+              id: null,
+              name: "",
+              servings: 2,
+              ingredients: [],
+              steps: [],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
