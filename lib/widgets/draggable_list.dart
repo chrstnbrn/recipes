@@ -10,11 +10,15 @@ enum DraggingMode {
 class DraggableList<T> extends StatefulWidget {
   final List<T> items;
   final Widget Function(BuildContext, T) itemBuilder;
+  final bool swipeToDelete;
+  final void Function(T, int) onDelete;
 
   const DraggableList({
     Key key,
     @required this.items,
     @required this.itemBuilder,
+    this.swipeToDelete = false,
+    this.onDelete,
   }) : super(key: key);
 
   @override
@@ -30,17 +34,25 @@ class _DraggableListState<T> extends State<DraggableList<T>> {
           child: ReorderableList(
             onReorder: _reorderCallback,
             child: ListView.builder(
+              padding: EdgeInsets.all(0),
               shrinkWrap: true,
               primary: false,
               itemBuilder: (context, index) {
                 var item = widget.items[index];
                 return DraggableListItem(
-                  key: ObjectKey(widget.items[index]),
-                  itemBuilder: (c) => widget.itemBuilder(c, item),
-                  isFirst: index == 0,
-                  isLast: index == widget.items.length - 1,
-                  draggingMode: DraggingMode.iOS,
-                );
+                    key: ObjectKey(item),
+                    itemBuilder: (c) => widget.itemBuilder(c, item),
+                    isFirst: index == 0,
+                    isLast: index == widget.items.length - 1,
+                    draggingMode: DraggingMode.iOS,
+                    swipeToDelete: widget.swipeToDelete,
+                    onDelete: () {
+                      setState(() => widget.items.removeAt(index));
+
+                      if (widget.onDelete != null) {
+                        widget.onDelete(item, index);
+                      }
+                    });
               },
               itemCount: widget.items.length,
             ),
@@ -76,6 +88,8 @@ class DraggableListItem extends StatelessWidget {
     @required this.isFirst,
     @required this.isLast,
     @required this.draggingMode,
+    @required this.swipeToDelete,
+    @required this.onDelete,
   });
 
   final Key key;
@@ -83,6 +97,8 @@ class DraggableListItem extends StatelessWidget {
   final bool isFirst;
   final bool isLast;
   final DraggingMode draggingMode;
+  final bool swipeToDelete;
+  final void Function() onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -104,10 +120,10 @@ class DraggableListItem extends StatelessWidget {
       decoration = BoxDecoration(
           border: Border(
               top: isFirst && !placeholder
-                  ? Divider.createBorderSide(context) //
+                  ? Divider.createBorderSide(context)
                   : BorderSide.none,
               bottom: isLast && placeholder
-                  ? BorderSide.none //
+                  ? BorderSide.none
                   : Divider.createBorderSide(context)),
           color: placeholder ? null : Colors.white);
     }
@@ -119,7 +135,10 @@ class DraggableListItem extends StatelessWidget {
             child: Container(
               padding: EdgeInsets.only(left: 4),
               child: Center(
-                child: Icon(Icons.reorder, color: Color(0xFF888888)),
+                child: Icon(
+                  Icons.drag_handle,
+                  color: Colors.grey[600],
+                ),
               ),
             ),
           )
@@ -157,6 +176,21 @@ class DraggableListItem extends StatelessWidget {
     if (draggingMode == DraggingMode.Android) {
       content = DelayedReorderableListener(
         child: content,
+      );
+    }
+
+    if (this.swipeToDelete) {
+      return Dismissible(
+        key: key,
+        child: content,
+        direction: DismissDirection.endToStart,
+        background: Container(
+          color: Theme.of(context).selectedRowColor,
+          alignment: Alignment.centerRight,
+          padding: EdgeInsets.all(16),
+          child: Icon(Icons.delete),
+        ),
+        onDismissed: (direction) => onDelete(),
       );
     }
 

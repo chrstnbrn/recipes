@@ -41,33 +41,33 @@ class StepListState extends State<StepList> {
   Widget _buildSteps() {
     return DraggableList(
       items: widget.steps,
-      itemBuilder: (context, step) {
-        return Row(
-          children: [
-            Expanded(
-              child: Text(
-                step.description,
-                style: Theme.of(context).textTheme.subtitle1,
-              ),
-              flex: 1,
-            ),
-            Row(mainAxisSize: MainAxisSize.min, children: [
-              new IconButton(
-                icon: new Icon(Icons.edit),
-                onPressed: () => showDialog(
-                    context: context,
-                    builder: (context) => _buildEditStepDialog(step)),
-              ),
-              new IconButton(
-                icon: new Icon(Icons.delete),
-                onPressed: () => showDialog(
-                    context: context,
-                    builder: (context) => _buildDeleteStepDialog(step)),
-              ),
-            ]),
-          ],
+      itemBuilder: _buildStep,
+      swipeToDelete: true,
+      onDelete: (RecipeStep step, int index) {
+        Scaffold.of(context).showSnackBar(
+          SnackBar(
+              content: Text("Deleted step \"${step.description}\""),
+              action: SnackBarAction(
+                label: "UNDO",
+                onPressed: () {
+                  setState(() => widget.steps.insert(index, step));
+                },
+              )),
         );
       },
+    );
+  }
+
+  InkWell _buildStep(BuildContext context, RecipeStep step) {
+    return InkWell(
+      child: Text(
+        step.description,
+        style: Theme.of(context).textTheme.subtitle1,
+      ),
+      onTap: () => showDialog(
+        context: context,
+        builder: (context) => _buildEditStepDialog(step),
+      ),
     );
   }
 
@@ -104,29 +104,6 @@ class StepListState extends State<StepList> {
           onSubmit: (_) {
             setState(() => {});
           }),
-    );
-  }
-
-  Widget _buildDeleteStepDialog(RecipeStep step) {
-    return AlertDialog(
-      title: Text("Delete ${step.description}?"),
-      actions: <Widget>[
-        FlatButton(
-          child: Text('Cancel'),
-          textColor: Theme.of(context).hintColor,
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        RaisedButton(
-          child: Text('Delete'),
-          color: Theme.of(context).errorColor,
-          onPressed: () {
-            setState(() {
-              this.widget.steps.remove(step);
-            });
-            Navigator.of(context).pop();
-          },
-        ),
-      ],
     );
   }
 }
