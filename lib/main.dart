@@ -14,7 +14,9 @@ class RecipesApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: Firebase.initializeApp(),
+        future: Firebase.initializeApp().then(
+          (value) => FirebaseDatabase.instance.setPersistenceEnabled(true),
+        ),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return CircularProgressIndicator(
@@ -24,14 +26,18 @@ class RecipesApp extends StatelessWidget {
 
           if (snapshot.connectionState == ConnectionState.done) {
             return MultiProvider(
-                providers: [
-                  ChangeNotifierProvider<AuthProvider>(
-                      create: (context) => AuthProvider()),
-                  Provider<RecipeRepository>(
-                      create: (context) => new RecipeRepository(
-                          FirebaseDatabase.instance.reference())),
-                ],
-                child: Builder(builder: (context) {
+              providers: [
+                ChangeNotifierProvider<AuthProvider>(
+                  create: (context) => AuthProvider(),
+                ),
+                Provider<RecipeRepository>(
+                  create: (context) => new RecipeRepository(
+                    FirebaseDatabase.instance.reference(),
+                  ),
+                ),
+              ],
+              child: Builder(
+                builder: (context) {
                   var authProvider = Provider.of<AuthProvider>(context);
                   return MaterialApp(
                       title: "Recipes",
@@ -40,7 +46,9 @@ class RecipesApp extends StatelessWidget {
                           ? Routes.recipes
                           : Routes.login,
                       onGenerateRoute: Router.generateRoute);
-                }));
+                },
+              ),
+            );
           }
 
           return CircularProgressIndicator();
