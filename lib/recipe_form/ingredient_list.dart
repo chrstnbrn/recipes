@@ -24,7 +24,7 @@ class IngredientListState extends State<IngredientList> {
           children: <Widget>[
             _buildIngredientsHeader(),
             _buildIngredientList(),
-            _buildAddIngredientButton()
+            _buildAddIngredientButton(),
           ],
         ));
   }
@@ -97,29 +97,6 @@ class IngredientListState extends State<IngredientList> {
       title: Text('Edit ingredient'),
       content: IngredientForm(
           ingredient: ingredient, onSubmit: (ingredient) => setState(() {})),
-    );
-  }
-
-  Widget _buildDeleteIngredientDialog(RecipeIngredient ingredient) {
-    return AlertDialog(
-      title: Text("Delete ${ingredient.ingredientName}?"),
-      actions: <Widget>[
-        FlatButton(
-          child: Text('Cancel'),
-          textColor: Theme.of(context).hintColor,
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        RaisedButton(
-          child: Text('Delete'),
-          color: Theme.of(context).errorColor,
-          onPressed: () {
-            setState(() {
-              this.widget.ingredients.remove(ingredient);
-            });
-            Navigator.of(context).pop();
-          },
-        )
-      ],
     );
   }
 }
