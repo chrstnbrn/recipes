@@ -8,6 +8,6 @@ ThemeData appTheme() {
         onPrimary: Colors.white,
         onSecondary: Colors.white),
   ).copyWith(
-      buttonTheme: ButtonThemeData(
+      buttonTheme: const ButtonThemeData(
           buttonColor: Colors.green, textTheme: ButtonTextTheme.primary));
 }

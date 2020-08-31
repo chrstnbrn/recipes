@@ -1,32 +1,35 @@
 import 'package:flutter/material.dart';
-import 'package:recipes/routes.dart';
-import 'package:recipes/screens/add_recipe_screen.dart';
-import 'package:recipes/screens/edit_recipe_screen.dart';
-import 'package:recipes/screens/login_screen.dart';
-import 'package:recipes/screens/recipe_detail_screen.dart';
-import 'package:recipes/screens/recipes_screen.dart';
+
+import 'routes.dart';
+import 'screens/add_recipe_screen.dart';
+import 'screens/edit_recipe_screen.dart';
+import 'screens/login_screen.dart';
+import 'screens/recipe_detail_screen.dart';
+import 'screens/recipes_screen.dart';
 
 class Router {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     var screen = _getScreen(settings);
-    return MaterialPageRoute(builder: (BuildContext context) => screen);
+    return MaterialPageRoute<dynamic>(builder: (context) => screen);
   }
 
   static Widget _getScreen(RouteSettings settings) {
-    final Map<String, dynamic> arguments = settings.arguments;
+    final arguments = settings.arguments as Map<String, dynamic>;
     switch (settings.name) {
       case Routes.recipes:
-        return RecipesScreen();
+        return const RecipesScreen();
       case Routes.login:
-        return LoginScreen();
+        return const LoginScreen();
       case Routes.addRecipe:
-        return AddRecipeScreen();
+        return const AddRecipeScreen();
       case Routes.editRecipe:
-        return EditRecipeScreen(recipeId: arguments['recipeId']);
+        final recipeId = arguments['recipeId'] as String;
+        return EditRecipeScreen(recipeId: recipeId);
       case Routes.recipe:
-        return RecipeDetailScreen(recipeId: arguments['recipeId']);
+        final recipeId = arguments['recipeId'] as String;
+        return RecipeDetailScreen(recipeId: recipeId);
       default:
-        return LoginScreen();
+        return const LoginScreen();
     }
   }
 }

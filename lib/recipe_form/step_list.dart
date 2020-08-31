@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:recipes/models/recipe.dart';
-import 'package:recipes/recipe_form/step_form.dart';
-import 'package:recipes/widgets/draggable_list.dart';
+
+import '../models/recipe.dart';
+import '../widgets/draggable_list.dart';
+import 'step_form.dart';
 
 class StepList extends StatefulWidget {
-  final List<RecipeStep> steps;
+  const StepList({
+    Key key,
+    this.steps,
+  }) : super(key: key);
 
-  StepList(this.steps);
+  final List<RecipeStep> steps;
 
   @override
   State<StatefulWidget> createState() => StepListState();
@@ -17,16 +21,14 @@ class StepListState extends State<StepList> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: 32, bottom: 32),
-      child: Container(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            _buildStepsHeader(),
-            _buildSteps(),
-            _buildAddStepButton(),
-          ],
-        ),
+      padding: const EdgeInsets.only(top: 32, bottom: 32),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          _buildStepsHeader(),
+          _buildSteps(),
+          _buildAddStepButton(),
+        ],
       ),
     );
   }
@@ -63,22 +65,22 @@ class StepListState extends State<StepList> {
 
   InkWell _buildStep(BuildContext context, RecipeStep step) {
     return InkWell(
+      onTap: () => showDialog<void>(
+        context: context,
+        builder: (context) => _buildEditStepDialog(step),
+      ),
       child: Text(
         step.description,
         style: Theme.of(context).textTheme.subtitle1,
-      ),
-      onTap: () => showDialog(
-        context: context,
-        builder: (context) => _buildEditStepDialog(step),
       ),
     );
   }
 
   Widget _buildAddStepButton() {
     return OutlineButton.icon(
-      icon: Icon(Icons.add),
-      label: Text('Add Step'),
-      onPressed: () => showDialog(
+      icon: const Icon(Icons.add),
+      label: const Text('Add Step'),
+      onPressed: () => showDialog<void>(
         context: context,
         builder: (context) => _buildAddStepDialog(),
       ),
@@ -87,7 +89,7 @@ class StepListState extends State<StepList> {
 
   Widget _buildAddStepDialog() {
     return AlertDialog(
-      title: Text('Add step'),
+      title: const Text('Add step'),
       content: StepForm(
         step: RecipeStep(),
         onSubmit: (step) {
@@ -101,11 +103,11 @@ class StepListState extends State<StepList> {
 
   Widget _buildEditStepDialog(RecipeStep step) {
     return AlertDialog(
-      title: Text('Edit step'),
+      title: const Text('Edit step'),
       content: StepForm(
           step: step,
           onSubmit: (_) {
-            setState(() => {});
+            setState(() {});
           }),
     );
   }

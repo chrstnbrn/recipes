@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:recipes/models/recipe.dart';
-import 'package:recipes/widgets/draggable_list.dart';
 
+import '../models/recipe.dart';
+import '../widgets/draggable_list.dart';
 import 'ingredient_form.dart';
 
 class IngredientList extends StatefulWidget {
-  final List<RecipeIngredient> ingredients;
+  const IngredientList({
+    Key key,
+    @required this.ingredients,
+  }) : super(key: key);
 
-  IngredientList(this.ingredients);
+  final List<RecipeIngredient> ingredients;
 
   @override
   State<StatefulWidget> createState() => IngredientListState();
@@ -18,7 +21,7 @@ class IngredientListState extends State<IngredientList> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: EdgeInsets.only(top: 32, bottom: 32),
+        padding: const EdgeInsets.only(top: 32, bottom: 32),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -61,29 +64,29 @@ class IngredientListState extends State<IngredientList> {
 
   Widget _buildIngredient(BuildContext context, RecipeIngredient ingredient) {
     return InkWell(
+      onTap: () => showDialog<void>(
+        context: context,
+        child: _buildEditIngredientDialog(ingredient),
+      ),
       child: Text(
         ingredient.toString(),
         style: Theme.of(context).textTheme.subtitle1,
-      ),
-      onTap: () => showDialog(
-        context: context,
-        child: _buildEditIngredientDialog(ingredient),
       ),
     );
   }
 
   Widget _buildAddIngredientButton() {
     return OutlineButton.icon(
-        icon: Icon(Icons.add),
-        label: Text('Add Ingredient'),
-        onPressed: () => showDialog(
+        icon: const Icon(Icons.add),
+        label: const Text('Add Ingredient'),
+        onPressed: () => showDialog<void>(
             context: context,
             builder: (context) => _buildAddIngredientDialog()));
   }
 
   Widget _buildAddIngredientDialog() {
     return AlertDialog(
-      title: Text('Add ingredient'),
+      title: const Text('Add ingredient'),
       content: IngredientForm(
           ingredient: RecipeIngredient(),
           onSubmit: (ingredient) => setState(() {
@@ -94,7 +97,7 @@ class IngredientListState extends State<IngredientList> {
 
   Widget _buildEditIngredientDialog(RecipeIngredient ingredient) {
     return AlertDialog(
-      title: Text('Edit ingredient'),
+      title: const Text('Edit ingredient'),
       content: IngredientForm(
           ingredient: ingredient, onSubmit: (ingredient) => setState(() {})),
     );

@@ -4,18 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-class AuthProvider with ChangeNotifier {
-  StreamSubscription userAuthSub;
-  final GoogleSignIn googleSignIn = GoogleSignIn();
-
+class AuthProvider extends ChangeNotifier {
   AuthProvider() {
     userAuthSub = FirebaseAuth.instance.authStateChanges().listen((newUser) {
       print('AuthProvider - FirebaseAuth - onAuthStateChanged - $newUser');
       notifyListeners();
-    }, onError: (e) {
+    }, onError: (dynamic e) {
       print('AuthProvider - FirebaseAuth - onAuthStateChanged - $e');
     });
   }
+
+  StreamSubscription userAuthSub;
+  final GoogleSignIn googleSignIn = GoogleSignIn();
 
   @override
   void dispose() {

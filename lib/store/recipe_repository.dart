@@ -2,28 +2,29 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:firebase_database/firebase_database.dart';
-import 'package:recipes/models/recipe.dart';
+
+import '../models/recipe.dart';
 
 class RecipeRepository {
-  final DatabaseReference database;
-
   const RecipeRepository(this.database);
+  final DatabaseReference database;
 
   DatabaseReference get recipeDatabase => database.child('recipes');
 
   Stream<List<Recipe>> recipes() {
     return recipeDatabase.onValue.map((event) {
-      Map<String, dynamic> recipeMap =
-          jsonDecode(jsonEncode(event.snapshot.value));
+      final recipeMap =
+          jsonDecode(jsonEncode(event.snapshot.value)) as Map<String, dynamic>;
 
-      return List<Recipe>.from(recipeMap.entries
-          .map((entry) => Recipe.fromJson(entry.key, entry.value)));
+      return List<Recipe>.from(recipeMap.entries.map<Recipe>((entry) =>
+          Recipe.fromJson(entry.key, entry.value as Map<String, dynamic>)));
     });
   }
 
   Stream<Recipe> recipe(String id) {
     return recipeDatabase.child(id).onValue.map((event) {
-      var recipe = jsonDecode(jsonEncode(event.snapshot.value));
+      final recipe =
+          jsonDecode(jsonEncode(event.snapshot.value)) as Map<String, dynamic>;
       return Recipe.fromJson(id, recipe);
     });
   }

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:recipes/models/recipe.dart';
-import 'package:recipes/providers/auth_provider.dart';
-import 'package:recipes/routes.dart';
-import 'package:recipes/store/recipe_repository.dart';
+
+import '../models/recipe.dart';
+import '../providers/auth_provider.dart';
+import '../routes.dart';
+import '../store/recipe_repository.dart';
 
 class RecipesScreen extends StatefulWidget {
-  RecipesScreen({Key key}) : super(key: key);
+  const RecipesScreen({Key key}) : super(key: key);
 
   @override
   _RecipeState createState() => _RecipeState();
@@ -28,22 +29,22 @@ class _RecipeState extends State<RecipesScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Recipes'),
+        title: const Text('Recipes'),
         actions: [
           FlatButton(
             textColor: Colors.white,
-            child: Text('Logout'),
             onPressed: () {
               authProvider.signOut();
               Navigator.pushNamed(context, Routes.login);
             },
+            child: const Text('Logout'),
           )
         ],
       ),
       body: Scrollbar(child: _buildRecipesList(repository.recipes())),
       floatingActionButton: FloatingActionButton(
           onPressed: () => Navigator.pushNamed(context, Routes.addRecipe),
-          child: Icon(Icons.add)),
+          child: const Icon(Icons.add)),
     );
   }
 
@@ -55,9 +56,9 @@ class _RecipeState extends State<RecipesScreen> {
           return ListView.separated(
               itemCount: snapshot.data.length,
               itemBuilder: (context, i) => _buildRow(snapshot.data[i]),
-              separatorBuilder: (context, i) => Divider());
+              separatorBuilder: (context, i) => const Divider());
         } else {
-          return CircularProgressIndicator();
+          return const CircularProgressIndicator();
         }
       },
     );

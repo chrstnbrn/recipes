@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:recipes/models/recipe.dart';
-import 'package:recipes/widgets/touch_spin_form_field.dart';
 
+import '../models/recipe.dart';
+import '../widgets/touch_spin_form_field.dart';
 import 'ingredient_list.dart';
 import 'step_list.dart';
 
 class RecipeForm extends StatefulWidget {
-  final Recipe recipe;
+  const RecipeForm({Key key, @required this.recipe}) : super(key: key);
 
-  RecipeForm({Key key, @required this.recipe}) : super(key: key);
+  final Recipe recipe;
 
   @override
   RecipeFormState createState() => RecipeFormState();
@@ -28,8 +28,8 @@ class RecipeFormState extends State<RecipeForm> {
           children: <Widget>[
             _buildRecipeNameField(),
             _buildServingsField(),
-            IngredientList(widget.recipe.ingredients),
-            StepList(widget.recipe.steps),
+            IngredientList(ingredients: widget.recipe.ingredients),
+            StepList(steps: widget.recipe.steps),
           ],
         ));
   }
@@ -38,16 +38,16 @@ class RecipeFormState extends State<RecipeForm> {
     return showDialog(
       context: context,
       child: AlertDialog(
-        title: Text('Discard changes?'),
-        content: Text('Unsaved data will be lost.'),
+        title: const Text('Discard changes?'),
+        content: const Text('Unsaved data will be lost.'),
         actions: <Widget>[
           FlatButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text('Cancel'),
+            child: const Text('Cancel'),
           ),
           FlatButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: Text('Discard'),
+            child: const Text('Discard'),
           ),
         ],
       ),
@@ -57,7 +57,7 @@ class RecipeFormState extends State<RecipeForm> {
   Widget _buildRecipeNameField() {
     return TextFormField(
       initialValue: widget.recipe.name,
-      decoration: InputDecoration(labelText: 'Recipe name'),
+      decoration: const InputDecoration(labelText: 'Recipe name'),
       validator: (value) => value.isEmpty ? 'Please enter a recipe name' : null,
       onSaved: (value) => widget.recipe.name = value,
     );
@@ -66,7 +66,7 @@ class RecipeFormState extends State<RecipeForm> {
   Widget _buildServingsField() {
     return TouchSpinFormField(
       initialValue: widget.recipe.servings,
-      decoration: InputDecoration(labelText: 'Servings'),
+      decoration: const InputDecoration(labelText: 'Servings'),
       onSaved: (value) => widget.recipe.servings = value,
     );
   }

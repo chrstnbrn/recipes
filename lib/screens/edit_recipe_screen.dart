@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:recipes/models/recipe.dart';
-import 'package:recipes/recipe_form/recipe_form.dart';
-import 'package:recipes/store/recipe_repository.dart';
+
+import '../models/recipe.dart';
+import '../recipe_form/recipe_form.dart';
+import '../store/recipe_repository.dart';
 
 class EditRecipeScreen extends StatelessWidget {
-  final String recipeId;
+  const EditRecipeScreen({Key key, @required this.recipeId}) : super(key: key);
 
-  EditRecipeScreen({Key key, @required this.recipeId}) : super(key: key);
+  final String recipeId;
 
   @override
   Widget build(BuildContext context) {
     var repository = Provider.of<RecipeRepository>(context);
 
-    return FutureBuilder(
+    return FutureBuilder<Recipe>(
       future: repository.recipe(recipeId).first,
       builder: (context, snapshot) {
         if (!snapshot.hasData) return Container();
@@ -32,14 +33,14 @@ class EditRecipeScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Recipe'),
+        title: const Text('Edit Recipe'),
         leading: IconButton(
-          icon: Icon(Icons.close),
+          icon: const Icon(Icons.close),
           onPressed: () => Navigator.maybePop(context),
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.check),
+            icon: const Icon(Icons.check),
             onPressed: () {
               var recipe = formKey.currentState.submit();
               if (recipe != null) {
@@ -52,7 +53,7 @@ class EditRecipeScreen extends StatelessWidget {
       ),
       body: SizedBox.expand(
         child: SingleChildScrollView(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: RecipeForm(key: formKey, recipe: recipe),
         ),
       ),

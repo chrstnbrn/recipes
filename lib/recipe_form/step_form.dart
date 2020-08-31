@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:recipes/models/recipe.dart';
+
+import '../models/recipe.dart';
 
 class StepForm extends StatefulWidget {
-  StepForm({
+  const StepForm({
+    Key key,
     this.step,
     this.onSubmit,
-  });
+  }) : super(key: key);
 
   final RecipeStep step;
   final ValueChanged<RecipeStep> onSubmit;
@@ -30,7 +32,7 @@ class StepFormState extends State<StepForm> {
 
   Widget _buildIngredientNameField() {
     return TextFormField(
-      decoration: InputDecoration(labelText: 'Description'),
+      decoration: const InputDecoration(labelText: 'Description'),
       initialValue: widget.step.description,
       autofocus: true,
       keyboardType: TextInputType.multiline,
@@ -42,10 +44,9 @@ class StepFormState extends State<StepForm> {
 
   Widget _buildSubmitButton() {
     return Padding(
-        padding: EdgeInsets.only(top: 16),
+        padding: const EdgeInsets.only(top: 16),
         child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
           RaisedButton(
-            child: Text('Add'),
             onPressed: () {
               if (_formKey.currentState.validate()) {
                 _formKey.currentState.save();
@@ -53,6 +54,7 @@ class StepFormState extends State<StepForm> {
                 Navigator.of(context).pop();
               }
             },
+            child: const Text('Add'),
           )
         ]));
   }

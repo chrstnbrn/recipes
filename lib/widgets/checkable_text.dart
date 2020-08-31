@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-
 class CheckableText extends StatefulWidget {
-  CheckableText({Key key, this.text}) : super(key: key);
+  const CheckableText({Key key, this.text}) : super(key: key);
 
   final String text;
 
@@ -12,7 +11,6 @@ class CheckableText extends StatefulWidget {
 }
 
 class _CheckableTextState extends State<CheckableText> {
-
   bool crossed = false;
 
   @override
@@ -23,9 +21,10 @@ class _CheckableTextState extends State<CheckableText> {
           crossed = !crossed;
         });
       },
-      child: Text(widget.text, style: TextStyle(
-          decoration: crossed ? TextDecoration.lineThrough : TextDecoration
-              .none)),
+      child: Text(widget.text,
+          style: TextStyle(
+              decoration:
+                  crossed ? TextDecoration.lineThrough : TextDecoration.none)),
     );
   }
 }

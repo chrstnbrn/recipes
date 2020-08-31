@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:pattern_formatter/numeric_formatter.dart';
-import 'package:recipes/models/recipe.dart';
+import '../models/recipe.dart';
 
 class IngredientForm extends StatefulWidget {
-  IngredientForm({
+  const IngredientForm({
+    Key key,
     this.ingredient,
     this.onSubmit,
-  });
+  }) : super(key: key);
 
   final RecipeIngredient ingredient;
   final ValueChanged<RecipeIngredient> onSubmit;
@@ -36,7 +37,7 @@ class IngredientFormState extends State<IngredientForm> {
 
   Widget _buildIngredientNameField() {
     return TextFormField(
-      decoration: InputDecoration(labelText: 'Name'),
+      decoration: const InputDecoration(labelText: 'Name'),
       initialValue: widget.ingredient.ingredientName,
       autofocus: true,
       validator: (value) => value.isEmpty ? 'Please enter a name' : null,
@@ -46,7 +47,7 @@ class IngredientFormState extends State<IngredientForm> {
 
   Widget _buildIngredientAmountField() {
     return TextFormField(
-        decoration: InputDecoration(labelText: 'Amount'),
+        decoration: const InputDecoration(labelText: 'Amount'),
         initialValue: widget.ingredient.amount?.toString(),
         keyboardType: TextInputType.number,
         inputFormatters: [ThousandsFormatter(allowFraction: true)],
@@ -55,7 +56,7 @@ class IngredientFormState extends State<IngredientForm> {
 
   TextFormField _buildIngredientUnitField() {
     return TextFormField(
-      decoration: InputDecoration(labelText: 'Unit'),
+      decoration: const InputDecoration(labelText: 'Unit'),
       initialValue: widget.ingredient.unit,
       onSaved: (value) => widget.ingredient.unit = value,
     );
@@ -63,10 +64,9 @@ class IngredientFormState extends State<IngredientForm> {
 
   Widget _buildSubmitButton() {
     return Padding(
-        padding: EdgeInsets.only(top: 16),
+        padding: const EdgeInsets.only(top: 16),
         child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
           RaisedButton(
-            child: Text('Add'),
             onPressed: () {
               if (_formKey.currentState.validate()) {
                 _formKey.currentState.save();
@@ -74,6 +74,7 @@ class IngredientFormState extends State<IngredientForm> {
                 Navigator.of(context).pop();
               }
             },
+            child: const Text('Add'),
           )
         ]));
   }

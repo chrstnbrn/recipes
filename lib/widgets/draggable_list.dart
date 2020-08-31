@@ -4,15 +4,10 @@ import 'package:flutter_reorderable_list/flutter_reorderable_list.dart';
 
 enum DraggingMode {
   iOS,
-  Android,
+  android,
 }
 
 class DraggableList<T> extends StatefulWidget {
-  final List<T> items;
-  final Widget Function(BuildContext, T) itemBuilder;
-  final bool swipeToDelete;
-  final void Function(T, int) onDelete;
-
   const DraggableList({
     Key key,
     @required this.items,
@@ -20,6 +15,11 @@ class DraggableList<T> extends StatefulWidget {
     this.swipeToDelete = false,
     this.onDelete,
   }) : super(key: key);
+
+  final List<T> items;
+  final Widget Function(BuildContext, T) itemBuilder;
+  final bool swipeToDelete;
+  final void Function(T, int) onDelete;
 
   @override
   _DraggableListState<T> createState() => _DraggableListState<T>();
@@ -34,13 +34,13 @@ class _DraggableListState<T> extends State<DraggableList<T>> {
           child: ReorderableList(
             onReorder: _reorderCallback,
             child: ListView.builder(
-              padding: EdgeInsets.symmetric(vertical: 16),
+              padding: const EdgeInsets.symmetric(vertical: 16),
               shrinkWrap: true,
               primary: false,
               itemBuilder: (context, index) {
                 var item = widget.items[index];
                 return DraggableListItem(
-                    key: ObjectKey(item),
+                    itemKey: ObjectKey(item),
                     itemBuilder: (c) => widget.itemBuilder(c, item),
                     isFirst: index == 0,
                     isLast: index == widget.items.length - 1,
@@ -82,18 +82,18 @@ class _DraggableListState<T> extends State<DraggableList<T>> {
 }
 
 class DraggableListItem extends StatelessWidget {
-  DraggableListItem({
-    @required this.key,
+  const DraggableListItem({
+    Key key,
+    @required this.itemKey,
     @required this.itemBuilder,
     @required this.isFirst,
     @required this.isLast,
     @required this.draggingMode,
     @required this.swipeToDelete,
     @required this.onDelete,
-  });
+  }) : super(key: key);
 
-  @override
-  final Key key;
+  final Key itemKey;
   final Widget Function(BuildContext) itemBuilder;
   final bool isFirst;
   final bool isLast;
@@ -104,7 +104,7 @@ class DraggableListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ReorderableItem(
-      key: key,
+      key: itemKey,
       childBuilder: _buildChild,
     );
   }
@@ -122,14 +122,12 @@ class DraggableListItem extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // For iOS dragging mode, there will be drag handle on the right that triggers
-                // reordering; For android mode it will be just an empty container
                 draggingMode == DraggingMode.iOS
                     ? _buildDragHandle()
                     : Container(),
                 Expanded(
                   child: Padding(
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       vertical: 14.0,
                       horizontal: 14.0,
                     ),
@@ -143,8 +141,7 @@ class DraggableListItem extends StatelessWidget {
       ),
     );
 
-    // For android dragging mode, wrap the entire content in DelayedReorderableListener
-    if (draggingMode == DraggingMode.Android) {
+    if (draggingMode == DraggingMode.android) {
       content = DelayedReorderableListener(
         child: content,
       );
@@ -152,8 +149,7 @@ class DraggableListItem extends StatelessWidget {
 
     if (swipeToDelete) {
       return Dismissible(
-        key: key,
-        child: content,
+        key: itemKey,
         direction: DismissDirection.endToStart,
         background: Container(
           decoration: BoxDecoration(
@@ -161,10 +157,11 @@ class DraggableListItem extends StatelessWidget {
             color: Theme.of(context).selectedRowColor,
           ),
           alignment: Alignment.centerRight,
-          padding: EdgeInsets.only(right: 16),
-          child: Icon(Icons.delete),
+          padding: const EdgeInsets.only(right: 16),
+          child: const Icon(Icons.delete),
         ),
         onDismissed: (direction) => onDelete(),
+        child: content,
       );
     }
 
@@ -174,7 +171,7 @@ class DraggableListItem extends StatelessWidget {
   ReorderableListener _buildDragHandle() {
     return ReorderableListener(
       child: Container(
-        padding: EdgeInsets.only(left: 4),
+        padding: const EdgeInsets.only(left: 4),
         child: Center(
           child: Icon(
             Icons.drag_handle,

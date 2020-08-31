@@ -4,25 +4,29 @@ import 'package:flutter_touch_spin/flutter_touch_spin.dart';
 import 'package:intl/intl.dart';
 
 class TouchSpinFormField extends FormField<int> {
-  TouchSpinFormField(
-      {int initialValue,
-      FormFieldSetter<int> onSaved,
-      FormFieldValidator<int> validator,
-      InputDecoration decoration})
-      : super(
+  TouchSpinFormField({
+    Key key,
+    int initialValue,
+    FormFieldSetter<int> onSaved,
+    FormFieldValidator<int> validator,
+    InputDecoration decoration,
+  }) : super(
+          key: key,
           autovalidate: false,
           onSaved: onSaved,
           validator: validator,
           initialValue: initialValue,
-          builder: (state) => TouchSpinFormFieldWidget(state, decoration),
+          builder: (state) =>
+              TouchSpinFormFieldWidget(state: state, decoration: decoration),
         );
 }
 
 class TouchSpinFormFieldWidget extends StatefulWidget {
+  const TouchSpinFormFieldWidget({Key key, this.state, this.decoration})
+      : super(key: key);
+
   final FormFieldState<int> state;
   final InputDecoration decoration;
-
-  TouchSpinFormFieldWidget(this.state, this.decoration);
 
   @override
   TouchSpinFormFieldState createState() =>
@@ -30,25 +34,26 @@ class TouchSpinFormFieldWidget extends StatefulWidget {
 }
 
 class TouchSpinFormFieldState extends State<TouchSpinFormFieldWidget> {
+  TouchSpinFormFieldState(this.state, this.decoration);
+
   final FormFieldState<int> state;
   final InputDecoration decoration;
 
   FocusNode _focusNode;
   bool _isFocused = false;
 
-  TouchSpinFormFieldState(this.state, this.decoration);
-
   @override
   void initState() {
     super.initState();
-    _focusNode = FocusNode();
-    _focusNode.addListener(_handleFocusChange);
+    _focusNode = FocusNode()..addListener(_handleFocusChange);
   }
 
   @override
   void dispose() {
-    _focusNode.removeListener(_handleFocusChange);
-    _focusNode.dispose();
+    _focusNode
+      ..removeListener(_handleFocusChange)
+      ..dispose();
+
     super.dispose();
   }
 
@@ -68,7 +73,7 @@ class TouchSpinFormFieldState extends State<TouchSpinFormFieldWidget> {
           child: TouchSpin(
               value: state.value,
               displayFormat: NumberFormat(),
-              onChanged: (num value) {
+              onChanged: (value) {
                 _focusNode.requestFocus();
                 state.didChange(value.toInt());
               }),
