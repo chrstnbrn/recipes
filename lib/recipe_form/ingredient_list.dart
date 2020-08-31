@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import '../models/recipe.dart';
+import '../models/recipe_ingredient.dart';
 import '../widgets/draggable_list.dart';
 import 'ingredient_form.dart';
 

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/recipe.dart';
+import '../models/recipe_ingredient.dart';
+import '../models/recipe_step.dart';
 import '../routes.dart';
 import '../store/recipe_repository.dart';
 import '../widgets/checkable_text.dart';
@@ -16,17 +18,21 @@ class RecipeDetailScreen extends StatelessWidget {
     var repository = Provider.of<RecipeRepository>(context);
 
     return StreamBuilder<Recipe>(
-        stream: repository.recipe(recipeId),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return _buildContent(snapshot.data, context, repository);
-          }
-          return const CircularProgressIndicator();
-        });
+      stream: repository.recipe(recipeId),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return _buildContent(snapshot.data, context, repository);
+        }
+        return const CircularProgressIndicator();
+      },
+    );
   }
 
   Widget _buildContent(
-      Recipe recipe, BuildContext context, RecipeRepository repository) {
+    Recipe recipe,
+    BuildContext context,
+    RecipeRepository repository,
+  ) {
     return Scaffold(
       appBar: AppBar(
         title: Text(recipe.name),
@@ -54,40 +60,41 @@ class RecipeDetailScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: _buildRecipeDetail(recipe),
+      body: SizedBox.expand(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: _buildRecipeDetail(recipe),
+        ),
       ),
     );
   }
 
   Widget _buildRecipeDetail(Recipe recipe) {
-    return Column(children: <Widget>[
-      Flexible(child: _buildRecipeList(recipe)),
+    return Column(children: [
+      _buildIngredientsList(recipe.ingredients),
+      _buildStepsList(recipe.steps),
     ]);
   }
 
-  Widget _buildRecipeList(Recipe recipe) {
-    var itemsToDisplay = <RecipeDetailListItem>[
-      ...recipe.ingredients,
-      ...recipe.steps,
-    ];
-
+  Widget _buildIngredientsList(List<RecipeIngredient> ingredients) {
     return ListView.builder(
-        itemCount: itemsToDisplay.length,
-        shrinkWrap: true,
-        itemBuilder: (context, i) {
-          final item = itemsToDisplay[i];
-          if (item is RecipeIngredient) {
-            return Text(item.toString());
-          } else if (item is RecipeStep) {
-            return Padding(
-                padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                child: CheckableText(text: item.description));
-          } else {
-            return const Text('');
-          }
-        });
+      primary: false,
+      shrinkWrap: true,
+      itemCount: ingredients.length,
+      itemBuilder: (context, index) => Text(ingredients[index].toString()),
+    );
+  }
+
+  Widget _buildStepsList(List<RecipeStep> steps) {
+    return ListView.builder(
+      primary: false,
+      shrinkWrap: true,
+      itemCount: steps.length,
+      itemBuilder: (context, index) => Padding(
+        padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+        child: CheckableText(text: steps[index].description),
+      ),
+    );
   }
 
   Widget _buildConfirmDeletionDialog({

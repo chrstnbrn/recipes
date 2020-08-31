@@ -1,6 +1,7 @@
 import 'package:meta/meta.dart';
 
-abstract class RecipeDetailListItem {}
+import 'recipe_ingredient.dart';
+import 'recipe_step.dart';
 
 class Recipe {
   Recipe({
@@ -49,55 +50,5 @@ class Recipe {
         'ingredients':
             List<dynamic>.from(ingredients.map<dynamic>((x) => x.toJson())),
         'steps': List<dynamic>.from(steps.map<dynamic>((x) => x.toJson())),
-      };
-}
-
-class RecipeIngredient implements RecipeDetailListItem {
-  RecipeIngredient({
-    this.amount,
-    this.unit,
-    this.ingredientName,
-  });
-
-  factory RecipeIngredient.fromJson(Map<String, dynamic> json) {
-    return RecipeIngredient(
-      amount: (json['amount'] as num)?.toDouble(),
-      unit: json['unit'] as String,
-      ingredientName: json['ingredientName'] as String,
-    );
-  }
-
-  double amount;
-  String unit;
-  String ingredientName;
-
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'amount': amount,
-        'unit': unit,
-        'ingredientName': ingredientName,
-      };
-
-  @override
-  String toString() {
-    var result = '';
-    if (amount != null) result += '$amount ';
-    if (unit != null) result += '$unit ';
-    return result + ingredientName;
-  }
-}
-
-class RecipeStep implements RecipeDetailListItem {
-  RecipeStep({
-    this.description,
-  });
-
-  factory RecipeStep.fromJson(Map<String, dynamic> json) => RecipeStep(
-        description: json['description'] as String,
-      );
-
-  String description;
-
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'description': description,
       };
 }

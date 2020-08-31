@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../models/recipe.dart';
+import '../models/recipe_step.dart';
 
 class StepForm extends StatefulWidget {
   const StepForm({
