@@ -51,4 +51,22 @@ class Recipe {
             List<dynamic>.from(ingredients.map<dynamic>((x) => x.toJson())),
         'steps': List<dynamic>.from(steps.map<dynamic>((x) => x.toJson())),
       };
+
+  Recipe changeServings(int newServings) {
+    return Recipe(
+      id: id,
+      name: name,
+      servings: newServings,
+      ingredients: List.from(
+        ingredients.map<RecipeIngredient>(
+          (ingredient) => ingredient.adjustAmount(servings, newServings),
+        ),
+      ),
+      steps: List.from(
+        steps.map<RecipeStep>(
+          (step) => RecipeStep(description: step.description),
+        ),
+      ),
+    );
+  }
 }

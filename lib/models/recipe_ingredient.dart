@@ -1,8 +1,10 @@
+import 'package:meta/meta.dart';
+
 class RecipeIngredient {
   RecipeIngredient({
     this.amount,
     this.unit,
-    this.ingredientName,
+    @required this.ingredientName,
   });
 
   factory RecipeIngredient.fromJson(Map<String, dynamic> json) {
@@ -29,5 +31,13 @@ class RecipeIngredient {
     if (amount != null) result += '$amount ';
     if (unit != null) result += '$unit ';
     return result + ingredientName;
+  }
+
+  RecipeIngredient adjustAmount(int oldServings, int newServings) {
+    return RecipeIngredient(
+      ingredientName: ingredientName,
+      unit: unit,
+      amount: amount == null ? null : amount / oldServings * newServings,
+    );
   }
 }

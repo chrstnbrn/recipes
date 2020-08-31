@@ -1,6 +1,8 @@
+import 'package:meta/meta.dart';
+
 class RecipeStep {
   RecipeStep({
-    this.description,
+    @required this.description,
   });
 
   factory RecipeStep.fromJson(Map<String, dynamic> json) => RecipeStep(
