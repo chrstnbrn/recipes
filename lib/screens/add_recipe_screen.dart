@@ -37,9 +37,9 @@ class AddRecipeScreen extends StatelessWidget {
           padding: EdgeInsets.all(16.0),
           child: RecipeForm(
             key: formKey,
-            recipe: new Recipe(
+            recipe: Recipe(
               id: null,
-              name: "",
+              name: '',
               servings: 2,
               ingredients: [],
               steps: [],

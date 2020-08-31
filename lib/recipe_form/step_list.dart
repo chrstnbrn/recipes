@@ -50,9 +50,9 @@ class StepListState extends State<StepList> {
   void _showUndoDeleteStepSnackBar(RecipeStep step, int index) {
     Scaffold.of(context).showSnackBar(
       SnackBar(
-        content: Text("Deleted step \"${step.description}\""),
+        content: Text('Deleted step "${step.description}"'),
         action: SnackBarAction(
-          label: "UNDO",
+          label: 'UNDO',
           onPressed: () {
             setState(() => widget.steps.insert(index, step));
           },
@@ -89,10 +89,10 @@ class StepListState extends State<StepList> {
     return AlertDialog(
       title: Text('Add step'),
       content: StepForm(
-        step: new RecipeStep(),
+        step: RecipeStep(),
         onSubmit: (step) {
           setState(() {
-            this.widget.steps.add(step);
+            widget.steps.add(step);
           });
         },
       ),

@@ -18,8 +18,9 @@ class RecipeDetailScreen extends StatelessWidget {
     return StreamBuilder<Recipe>(
         stream: repository.recipe(recipeId),
         builder: (context, snapshot) {
-          if (snapshot.hasData)
+          if (snapshot.hasData) {
             return _buildContent(snapshot.data, context, repository);
+          }
           return CircularProgressIndicator();
         });
   }
@@ -35,7 +36,7 @@ class RecipeDetailScreen extends StatelessWidget {
             onPressed: () => Navigator.pushNamed(
               context,
               Routes.editRecipe,
-              arguments: {"recipeId": recipe.id},
+              arguments: {'recipeId': recipe.id},
             ),
           ),
           IconButton(
@@ -68,7 +69,7 @@ class RecipeDetailScreen extends StatelessWidget {
   }
 
   Widget _buildRecipeList(Recipe recipe) {
-    var itemsToDisplay = List<RecipeDetailListItem>();
+    var itemsToDisplay = <RecipeDetailListItem>[];
     itemsToDisplay.addAll(recipe.ingredients);
     itemsToDisplay.addAll(recipe.steps);
 
@@ -84,7 +85,7 @@ class RecipeDetailScreen extends StatelessWidget {
                 padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
                 child: CheckableText(text: item.description));
           } else {
-            return Text("");
+            return Text('');
           }
         });
   }
@@ -92,10 +93,10 @@ class RecipeDetailScreen extends StatelessWidget {
   Widget _buildConfirmDeletionDialog(
       {@required Function onConfirm, @required Function onCancel}) {
     return AlertDialog(
-      title: Text("Delete recipe?"),
+      title: Text('Delete recipe?'),
       actions: [
         FlatButton(
-          child: Text("Cancel"),
+          child: Text('Cancel'),
           onPressed: onCancel,
         ),
         FlatButton(

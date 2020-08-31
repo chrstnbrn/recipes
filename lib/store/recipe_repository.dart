@@ -9,7 +9,7 @@ class RecipeRepository {
 
   const RecipeRepository(this.database);
 
-  DatabaseReference get recipeDatabase => this.database.child("recipes");
+  DatabaseReference get recipeDatabase => database.child('recipes');
 
   Stream<List<Recipe>> recipes() {
     return recipeDatabase.onValue.map((event) {

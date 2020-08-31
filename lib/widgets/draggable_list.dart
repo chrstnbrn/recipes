@@ -67,8 +67,8 @@ class _DraggableListState<T> extends State<DraggableList<T>> {
   }
 
   bool _reorderCallback(Key item, Key newPosition) {
-    int draggingIndex = _indexOfKey(item);
-    int newPositionIndex = _indexOfKey(newPosition);
+    var draggingIndex = _indexOfKey(item);
+    var newPositionIndex = _indexOfKey(newPosition);
 
     final draggedItem = widget.items[draggingIndex];
 
@@ -92,6 +92,7 @@ class DraggableListItem extends StatelessWidget {
     @required this.onDelete,
   });
 
+  @override
   final Key key;
   final Widget Function(BuildContext) itemBuilder;
   final bool isFirst;
@@ -149,7 +150,7 @@ class DraggableListItem extends StatelessWidget {
       );
     }
 
-    if (this.swipeToDelete) {
+    if (swipeToDelete) {
       return Dismissible(
         key: key,
         child: content,
@@ -204,7 +205,7 @@ class DraggableListItem extends StatelessWidget {
         );
 
       default:
-        throw new ArgumentError("Invalid ReorderableItemState $state");
+        throw ArgumentError('Invalid ReorderableItemState $state');
     }
   }
 

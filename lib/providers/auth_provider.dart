@@ -31,10 +31,9 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<UserCredential> signInWithGoogle() async {
-    final GoogleSignInAccount account = await googleSignIn.signIn();
+    final account = await googleSignIn.signIn();
 
-    final GoogleSignInAuthentication authentication =
-        await account.authentication;
+    final authentication = await account.authentication;
 
     final AuthCredential credential = GoogleAuthProvider.credential(
       accessToken: authentication.accessToken,
@@ -46,6 +45,6 @@ class AuthProvider with ChangeNotifier {
 
   void signOut() async {
     await googleSignIn.signOut();
-    FirebaseAuth.instance.signOut();
+    await FirebaseAuth.instance.signOut();
   }
 }

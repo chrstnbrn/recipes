@@ -18,10 +18,10 @@ class Recipe {
   });
 
   factory Recipe.fromJson(String id, Map<String, dynamic> json) {
-    var name = json["name"];
-    var servings = json["servings"];
-    var ingredients = json["ingredients"];
-    var steps = json["steps"];
+    var name = json['name'];
+    var servings = json['servings'];
+    var ingredients = json['ingredients'];
+    var steps = json['steps'];
 
     return Recipe(
       id: id,
@@ -39,10 +39,10 @@ class Recipe {
   }
 
   Map<String, dynamic> toJson() => {
-        "name": name,
-        "servings": servings,
-        "ingredients": List<dynamic>.from(ingredients.map((x) => x.toJson())),
-        "steps": List<dynamic>.from(steps.map((x) => x.toJson())),
+        'name': name,
+        'servings': servings,
+        'ingredients': List<dynamic>.from(ingredients.map((x) => x.toJson())),
+        'steps': List<dynamic>.from(steps.map((x) => x.toJson())),
       };
 }
 
@@ -59,23 +59,24 @@ class RecipeIngredient implements RecipeDetailListItem {
 
   factory RecipeIngredient.fromJson(Map<String, dynamic> json) {
     return RecipeIngredient(
-      amount: json["amount"] == null ? null : json["amount"].toDouble(),
-      unit: json["unit"] == null ? null : json["unit"],
-      ingredientName: json["ingredientName"],
+      amount: json['amount'] == null ? null : json['amount'].toDouble(),
+      unit: json['unit'],
+      ingredientName: json['ingredientName'],
     );
   }
 
   Map<String, dynamic> toJson() => {
-        "amount": amount == null ? null : amount,
-        "unit": unit == null ? null : unit,
-        "ingredientName": ingredientName,
+        'amount': amount,
+        'unit': unit,
+        'ingredientName': ingredientName,
       };
 
+  @override
   String toString() {
-    var result = "";
-    if (this.amount != null) result += "${this.amount} ";
-    if (this.unit != null) result += "${this.unit} ";
-    result += this.ingredientName;
+    var result = '';
+    if (amount != null) result += '${amount} ';
+    if (unit != null) result += '${unit} ';
+    result += ingredientName;
     return result;
   }
 }
@@ -88,10 +89,10 @@ class RecipeStep implements RecipeDetailListItem {
   });
 
   factory RecipeStep.fromJson(Map<String, dynamic> json) => RecipeStep(
-        description: json["description"],
+        description: json['description'],
       );
 
   Map<String, dynamic> toJson() => {
-        "description": description,
+        'description': description,
       };
 }

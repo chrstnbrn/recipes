@@ -36,26 +36,26 @@ class IngredientFormState extends State<IngredientForm> {
 
   Widget _buildIngredientNameField() {
     return TextFormField(
-      decoration: InputDecoration(labelText: "Name"),
+      decoration: InputDecoration(labelText: 'Name'),
       initialValue: widget.ingredient.ingredientName,
       autofocus: true,
-      validator: (value) => value.isEmpty ? "Please enter a name" : null,
+      validator: (value) => value.isEmpty ? 'Please enter a name' : null,
       onSaved: (value) => widget.ingredient.ingredientName = value,
     );
   }
 
   Widget _buildIngredientAmountField() {
     return TextFormField(
-        decoration: InputDecoration(labelText: "Amount"),
+        decoration: InputDecoration(labelText: 'Amount'),
         initialValue: widget.ingredient.amount?.toString(),
         keyboardType: TextInputType.number,
         inputFormatters: [ThousandsFormatter(allowFraction: true)],
         onSaved: (value) => widget.ingredient.amount = double.tryParse(value));
   }
 
-  _buildIngredientUnitField() {
+  TextFormField _buildIngredientUnitField() {
     return TextFormField(
-      decoration: InputDecoration(labelText: "Unit"),
+      decoration: InputDecoration(labelText: 'Unit'),
       initialValue: widget.ingredient.unit,
       onSaved: (value) => widget.ingredient.unit = value,
     );

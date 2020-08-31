@@ -48,9 +48,9 @@ class IngredientListState extends State<IngredientList> {
   ) {
     Scaffold.of(context).showSnackBar(
       SnackBar(
-        content: Text("Deleted ingredient \"${ingredient.toString()}\""),
+        content: Text('Deleted ingredient "${ingredient.toString()}"'),
         action: SnackBarAction(
-          label: "UNDO",
+          label: 'UNDO',
           onPressed: () {
             setState(() => widget.ingredients.insert(index, ingredient));
           },
@@ -85,9 +85,9 @@ class IngredientListState extends State<IngredientList> {
     return AlertDialog(
       title: Text('Add ingredient'),
       content: IngredientForm(
-          ingredient: new RecipeIngredient(),
+          ingredient: RecipeIngredient(),
           onSubmit: (ingredient) => setState(() {
-                this.widget.ingredients.add(ingredient);
+                widget.ingredients.add(ingredient);
               })),
     );
   }

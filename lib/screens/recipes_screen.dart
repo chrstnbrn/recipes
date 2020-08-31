@@ -66,7 +66,7 @@ class _RecipeState extends State<RecipesScreen> {
   Widget _buildRow(Recipe recipe) {
     return ListTile(
       onTap: () => Navigator.pushNamed(context, Routes.recipe,
-          arguments: {"recipeId": recipe.id}),
+          arguments: {'recipeId': recipe.id}),
       title: Text(
         recipe.name,
         style: _biggerFont,

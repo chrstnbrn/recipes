@@ -30,12 +30,12 @@ class StepFormState extends State<StepForm> {
 
   Widget _buildIngredientNameField() {
     return TextFormField(
-      decoration: InputDecoration(labelText: "Description"),
+      decoration: InputDecoration(labelText: 'Description'),
       initialValue: widget.step.description,
       autofocus: true,
       keyboardType: TextInputType.multiline,
       maxLines: null,
-      validator: (value) => value.isEmpty ? "Please enter a description" : null,
+      validator: (value) => value.isEmpty ? 'Please enter a description' : null,
       onSaved: (value) => widget.step.description = value,
     );
   }

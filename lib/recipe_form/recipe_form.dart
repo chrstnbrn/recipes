@@ -37,17 +37,17 @@ class RecipeFormState extends State<RecipeForm> {
   Future<bool> _showConfirmDiscardDialog(BuildContext context) {
     return showDialog(
       context: context,
-      child: new AlertDialog(
-        title: new Text('Discard changes?'),
-        content: new Text('Unsaved data will be lost.'),
+      child: AlertDialog(
+        title: Text('Discard changes?'),
+        content: Text('Unsaved data will be lost.'),
         actions: <Widget>[
-          new FlatButton(
+          FlatButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: new Text('Cancel'),
+            child: Text('Cancel'),
           ),
-          new FlatButton(
+          FlatButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: new Text('Discard'),
+            child: Text('Discard'),
           ),
         ],
       ),
@@ -57,8 +57,8 @@ class RecipeFormState extends State<RecipeForm> {
   Widget _buildRecipeNameField() {
     return TextFormField(
       initialValue: widget.recipe.name,
-      decoration: InputDecoration(labelText: "Recipe name"),
-      validator: (value) => value.isEmpty ? "Please enter a recipe name" : null,
+      decoration: InputDecoration(labelText: 'Recipe name'),
+      validator: (value) => value.isEmpty ? 'Please enter a recipe name' : null,
       onSaved: (value) => widget.recipe.name = value,
     );
   }
@@ -66,7 +66,7 @@ class RecipeFormState extends State<RecipeForm> {
   Widget _buildServingsField() {
     return TouchSpinFormField(
       initialValue: widget.recipe.servings,
-      decoration: InputDecoration(labelText: "Servings"),
+      decoration: InputDecoration(labelText: 'Servings'),
       onSaved: (value) => widget.recipe.servings = value,
     );
   }

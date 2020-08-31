@@ -12,7 +12,7 @@ class Router {
     return MaterialPageRoute(builder: (BuildContext context) => screen);
   }
 
-  static _getScreen(RouteSettings settings) {
+  static Widget _getScreen(RouteSettings settings) {
     final Map<String, dynamic> arguments = settings.arguments;
     switch (settings.name) {
       case Routes.recipes:
@@ -22,11 +22,11 @@ class Router {
       case Routes.addRecipe:
         return AddRecipeScreen();
       case Routes.editRecipe:
-        return EditRecipeScreen(recipeId: arguments["recipeId"]);
+        return EditRecipeScreen(recipeId: arguments['recipeId']);
       case Routes.recipe:
-        return RecipeDetailScreen(recipeId: arguments["recipeId"]);
+        return RecipeDetailScreen(recipeId: arguments['recipeId']);
       default:
-        return Routes.login;
+        return LoginScreen();
     }
   }
 }

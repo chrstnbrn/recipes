@@ -10,12 +10,12 @@ class TouchSpinFormField extends FormField<int> {
       FormFieldValidator<int> validator,
       InputDecoration decoration})
       : super(
-            autovalidate: false,
-            onSaved: onSaved,
-            validator: validator,
-            initialValue: initialValue,
-            builder: (state) =>
-                new TouchSpinFormFieldWidget(state, decoration));
+          autovalidate: false,
+          onSaved: onSaved,
+          validator: validator,
+          initialValue: initialValue,
+          builder: (state) => TouchSpinFormFieldWidget(state, decoration),
+        );
 }
 
 class TouchSpinFormFieldWidget extends StatefulWidget {
@@ -41,7 +41,7 @@ class TouchSpinFormFieldState extends State<TouchSpinFormFieldWidget> {
   @override
   void initState() {
     super.initState();
-    _focusNode = new FocusNode();
+    _focusNode = FocusNode();
     _focusNode.addListener(_handleFocusChange);
   }
 
@@ -67,8 +67,7 @@ class TouchSpinFormFieldState extends State<TouchSpinFormFieldWidget> {
           isFocused: _isFocused,
           child: TouchSpin(
               value: state.value,
-              displayFormat: new NumberFormat(),
-              
+              displayFormat: NumberFormat(),
               onChanged: (num value) {
                 _focusNode.requestFocus();
                 state.didChange(value.toInt());

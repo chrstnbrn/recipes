@@ -31,7 +31,7 @@ class RecipesApp extends StatelessWidget {
                   create: (context) => AuthProvider(),
                 ),
                 Provider<RecipeRepository>(
-                  create: (context) => new RecipeRepository(
+                  create: (context) => RecipeRepository(
                     FirebaseDatabase.instance.reference(),
                   ),
                 ),
@@ -40,7 +40,7 @@ class RecipesApp extends StatelessWidget {
                 builder: (context) {
                   var authProvider = Provider.of<AuthProvider>(context);
                   return MaterialApp(
-                      title: "Recipes",
+                      title: 'Recipes',
                       theme: appTheme(),
                       initialRoute: authProvider.isAuthenticated
                           ? Routes.recipes
