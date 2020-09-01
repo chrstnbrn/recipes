@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:recipes/recipe_form/ingredient_list.dart';
 
 import '../models/recipe_step.dart';
 
@@ -49,7 +50,10 @@ class RecipeStepScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
-          children: <Widget>[_buildIngredientNameField()],
+          children: <Widget>[
+            _buildIngredientNameField(),
+            IngredientList(ingredients: step.ingredients)
+          ],
         ));
   }
 

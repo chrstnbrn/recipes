@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:recipes/models/recipe_ingredient.dart';
 
 import '../models/recipe_step.dart';
 import '../routes.dart';
@@ -77,10 +78,34 @@ class StepListState extends State<StepList> {
           });
         }
       },
-      child: Text(
-        step.description,
-        style: Theme.of(context).textTheme.subtitle1,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            step.description,
+            style: Theme.of(context).textTheme.subtitle1,
+          ),
+          Container(
+              margin: const EdgeInsets.only(top: 16),
+              child: _buildIngredients(context, step.ingredients))
+        ],
       ),
+    );
+  }
+
+  Widget _buildIngredients(
+    BuildContext context,
+    List<RecipeIngredient> ingredients,
+  ) {
+    return Wrap(
+      spacing: 16,
+      runSpacing: 8,
+      children: [
+        ...ingredients.map(
+          (i) =>
+              Text(i.toString(), style: Theme.of(context).textTheme.subtitle2),
+        ),
+      ],
     );
   }
 
@@ -89,7 +114,7 @@ class StepListState extends State<StepList> {
         icon: const Icon(Icons.add),
         label: const Text('Add Step'),
         onPressed: () async {
-          var step = RecipeStep(description: '');
+          var step = RecipeStep(description: '', ingredients: []);
           var newStep = await Navigator.of(context).pushNamed<RecipeStep>(
             Routes.stepForm,
             arguments: {'title': 'Add Step', 'step': step},

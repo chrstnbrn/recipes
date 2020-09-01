@@ -42,7 +42,6 @@ class AddRecipeScreen extends StatelessWidget {
               id: null,
               name: '',
               servings: 2,
-              ingredients: [],
               steps: [],
             ),
           ),
