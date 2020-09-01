@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import '../models/recipe_ingredient.dart';
-import '../widgets/draggable_list.dart';
+import '../../models/recipe_ingredient.dart';
+import '../../widgets/draggable_list.dart';
 import 'ingredient_form.dart';
 
 class IngredientList extends StatefulWidget {
@@ -23,7 +23,7 @@ class IngredientListState extends State<IngredientList> {
     return Padding(
         padding: const EdgeInsets.only(top: 32, bottom: 32),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             _buildIngredientsHeader(),
             _buildIngredientList(),
@@ -62,7 +62,11 @@ class IngredientListState extends State<IngredientList> {
     );
   }
 
-  Widget _buildIngredient(BuildContext context, RecipeIngredient ingredient) {
+  Widget _buildIngredient(
+    BuildContext context,
+    RecipeIngredient ingredient,
+    int index,
+  ) {
     return InkWell(
       onTap: () => showDialog<void>(
         context: context,
@@ -76,7 +80,7 @@ class IngredientListState extends State<IngredientList> {
   }
 
   Widget _buildAddIngredientButton() {
-    return OutlineButton.icon(
+    return RaisedButton.icon(
         icon: const Icon(Icons.add),
         label: const Text('Add Ingredient'),
         onPressed: () => showDialog<void>(

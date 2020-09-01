@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import '../models/recipe.dart';
+import '../models/recipe_step.dart';
 import '../widgets/touch_spin_form_field.dart';
-import 'ingredient_list.dart';
+import 'ingredients.dart';
 import 'step_list.dart';
 
 class RecipeForm extends StatefulWidget {
@@ -28,10 +29,27 @@ class RecipeFormState extends State<RecipeForm> {
           children: <Widget>[
             _buildRecipeNameField(),
             _buildServingsField(),
-            IngredientList(ingredients: widget.recipe.ingredients),
-            StepList(steps: widget.recipe.steps),
+            Ingredients(ingredients: widget.recipe.ingredients),
+            StepList(
+              steps: widget.recipe.steps,
+              onAddStep: onAddStep,
+              onUpdateStep: onUpdateStep,
+              onUndoDelete: onUndoDelete,
+            ),
           ],
         ));
+  }
+
+  void onAddStep(RecipeStep step) {
+    setState(() => widget.recipe.steps.add(step));
+  }
+
+  void onUpdateStep(RecipeStep step, int index) {
+    setState(() => widget.recipe.steps[index] = step);
+  }
+
+  void onUndoDelete(RecipeStep step, int index) {
+    setState(() => widget.recipe.steps.insert(index, step));
   }
 
   Future<bool> _showConfirmDiscardDialog(BuildContext context) {

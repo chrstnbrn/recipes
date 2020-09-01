@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:recipes/recipe_form/ingredient_list.dart';
 
-import '../models/recipe_step.dart';
+import '../../models/recipe_step.dart';
+import 'ingredient_list.dart';
 
 class RecipeStepScreen extends StatelessWidget {
   const RecipeStepScreen({

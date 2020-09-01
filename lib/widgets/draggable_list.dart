@@ -17,7 +17,7 @@ class DraggableList<T> extends StatefulWidget {
   }) : super(key: key);
 
   final List<T> items;
-  final Widget Function(BuildContext, T) itemBuilder;
+  final Widget Function(BuildContext, T, int) itemBuilder;
   final bool swipeToDelete;
   final void Function(T, int) onDelete;
 
@@ -41,7 +41,7 @@ class _DraggableListState<T> extends State<DraggableList<T>> {
                 var item = widget.items[index];
                 return DraggableListItem(
                     itemKey: ObjectKey(item),
-                    itemBuilder: (c) => widget.itemBuilder(c, item),
+                    itemBuilder: (c) => widget.itemBuilder(c, item, index),
                     isFirst: index == 0,
                     isLast: index == widget.items.length - 1,
                     draggingMode: DraggingMode.iOS,

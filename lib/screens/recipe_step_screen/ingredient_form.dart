@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pattern_formatter/numeric_formatter.dart';
 
-import '../models/recipe_ingredient.dart';
+import '../../models/recipe_ingredient.dart';
 
 class IngredientForm extends StatefulWidget {
   const IngredientForm({

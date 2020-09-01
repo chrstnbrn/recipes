@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:recipes/models/recipe_ingredient.dart';
 
+import '../models/recipe_ingredient.dart';
 import '../models/recipe_step.dart';
 import '../routes.dart';
 import '../widgets/draggable_list.dart';
 
-class StepList extends StatefulWidget {
+class StepList extends StatelessWidget {
   const StepList({
     Key key,
-    this.steps,
+    @required this.steps,
+    @required this.onAddStep,
+    @required this.onUpdateStep,
+    @required this.onUndoDelete,
   }) : super(key: key);
 
   final List<RecipeStep> steps;
+  final void Function(RecipeStep) onAddStep;
+  final void Function(RecipeStep, int) onUpdateStep;
+  final void Function(RecipeStep, int) onUndoDelete;
 
-  @override
-  State<StatefulWidget> createState() => StepListState();
-}
-
-class StepListState extends State<StepList> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -26,45 +27,34 @@ class StepListState extends State<StepList> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          _buildStepsHeader(),
-          _buildSteps(),
-          _buildAddStepButton(),
+          Text('Steps', style: Theme.of(context).textTheme.headline5),
+          DraggableList<RecipeStep>(
+            items: steps,
+            itemBuilder: _buildStep,
+            swipeToDelete: true,
+            onDelete: (step, i) =>
+                _showUndoDeleteStepSnackBar(context, step, i),
+          ),
+          _buildAddStepButton(context),
         ],
       ),
     );
   }
 
-  Widget _buildStepsHeader() {
-    return Text(
-      'Steps',
-      style: Theme.of(context).textTheme.headline5,
-    );
-  }
-
-  Widget _buildSteps() {
-    return DraggableList(
-      items: widget.steps,
-      itemBuilder: _buildStep,
-      swipeToDelete: true,
-      onDelete: _showUndoDeleteStepSnackBar,
-    );
-  }
-
-  void _showUndoDeleteStepSnackBar(RecipeStep step, int index) {
+  void _showUndoDeleteStepSnackBar(
+      BuildContext context, RecipeStep step, int index) {
     Scaffold.of(context).showSnackBar(
       SnackBar(
         content: Text('Deleted step "${step.description}"'),
         action: SnackBarAction(
           label: 'UNDO',
-          onPressed: () {
-            setState(() => widget.steps.insert(index, step));
-          },
+          onPressed: () => onUndoDelete(step, index),
         ),
       ),
     );
   }
 
-  InkWell _buildStep(BuildContext context, RecipeStep step) {
+  InkWell _buildStep(BuildContext context, RecipeStep step, int index) {
     return InkWell(
       onTap: () async {
         var updatedStep = await Navigator.of(context).pushNamed<RecipeStep>(
@@ -73,9 +63,7 @@ class StepListState extends State<StepList> {
         );
 
         if (updatedStep != null) {
-          setState(() {
-            step.description = updatedStep.description;
-          });
+          onUpdateStep(updatedStep, index);
         }
       },
       child: Column(
@@ -109,7 +97,7 @@ class StepListState extends State<StepList> {
     );
   }
 
-  Widget _buildAddStepButton() {
+  Widget _buildAddStepButton(BuildContext context) {
     return OutlineButton.icon(
         icon: const Icon(Icons.add),
         label: const Text('Add Step'),
@@ -121,9 +109,7 @@ class StepListState extends State<StepList> {
           );
 
           if (newStep != null) {
-            setState(() {
-              widget.steps.add(newStep);
-            });
+            onAddStep(newStep);
           }
         });
   }
