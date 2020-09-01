@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
+import 'models/recipe.dart';
 import 'models/recipe_step.dart';
 import 'routes.dart';
 import 'screens/add_recipe_screen.dart';
 import 'screens/edit_recipe_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/recipe_detail_screen/recipe_detail_screen.dart';
+import 'screens/recipe_instruction_screen/recipe_instruction_screen.dart';
 import 'screens/recipe_step_screen/recipe_step_screen.dart';
 import 'screens/recipes_screen.dart';
 
@@ -43,6 +45,11 @@ class Router {
             title: title,
             step: step,
           ),
+        );
+      case Routes.recipeInstruction:
+        final recipe = arguments['recipe'] as Recipe;
+        return MaterialPageRoute<dynamic>(
+          builder: (context) => RecipeInstructionScreen(recipe: recipe),
         );
       default:
         return MaterialPageRoute<dynamic>(

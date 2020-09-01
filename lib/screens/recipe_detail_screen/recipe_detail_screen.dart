@@ -65,6 +65,16 @@ class RecipeDetailScreen extends StatelessWidget {
               ),
             ),
           ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              Navigator.pushNamed(
+                context,
+                Routes.recipeInstruction,
+                arguments: {'recipe': recipe},
+              );
+            },
+            child: const Icon(Icons.fastfood),
+          ),
         );
       },
     );

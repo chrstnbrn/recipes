@@ -74,8 +74,9 @@ class StepList extends StatelessWidget {
             style: Theme.of(context).textTheme.subtitle1,
           ),
           Container(
-              margin: const EdgeInsets.only(top: 16),
-              child: _buildIngredients(context, step.ingredients))
+            margin: const EdgeInsets.only(top: 16),
+            child: _buildIngredients(context, step.ingredients),
+          )
         ],
       ),
     );
