@@ -1,20 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:wakelock/wakelock.dart';
 
 import '../../models/recipe.dart';
 import '../../models/recipe_ingredient.dart';
 import '../../models/recipe_step.dart';
 
-class RecipeInstructionScreen extends StatelessWidget {
+class RecipeInstructionScreen extends StatefulWidget {
   const RecipeInstructionScreen({Key key, @required this.recipe})
       : super(key: key);
 
   final Recipe recipe;
 
   @override
+  _RecipeInstructionScreenState createState() =>
+      _RecipeInstructionScreenState();
+}
+
+class _RecipeInstructionScreenState extends State<RecipeInstructionScreen> {
+  @override
+  void initState() {
+    Wakelock.enable();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    Wakelock.disable();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(recipe.name),
+        title: Text(widget.recipe.name),
       ),
       body: SizedBox.expand(
         child: SingleChildScrollView(
@@ -27,7 +46,7 @@ class RecipeInstructionScreen extends StatelessWidget {
 
   Widget _buildSteps(BuildContext context) {
     return Column(children: [
-      ...recipe.steps.map(
+      ...widget.recipe.steps.map(
         (step) => _buildStep(context, step),
       ),
     ]);
