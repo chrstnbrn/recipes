@@ -32,11 +32,11 @@ class RecipeStep {
   RecipeStep adjustAmount(int oldServings, int newServings) {
     return RecipeStep(
       description: description,
-      ingredients: List.from(
-        ingredients.map<RecipeIngredient>(
+      ingredients: [
+        ...ingredients.map<RecipeIngredient>(
           (e) => e.adjustAmount(oldServings, newServings),
-        ),
-      ),
+        )
+      ],
     );
   }
 }

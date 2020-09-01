@@ -11,17 +11,18 @@ void main() {
       var recipe = Recipe.fromJson('abc123', <String, dynamic>{
         'name': 'Tomaten-Couscous',
         'servings': 3,
-        'ingredients': [
-          <String, dynamic>{
-            'amount': 100,
-            'unit': 'g',
-            'ingredientName': 'Couscous'
-          },
-          <String, dynamic>{'ingredientName': 'Salz'}
-        ],
         'steps': [
-          <String, dynamic>{'description': 'Step 1'},
-          <String, dynamic>{'description': 'Step 2'},
+          <String, dynamic>{
+            'description': 'Step 1',
+            'ingredients': [
+              {'amount': 100, 'unit': 'g', 'ingredientName': 'Couscous'},
+              {'ingredientName': 'Salz'}
+            ]
+          },
+          <String, dynamic>{
+            'description': 'Step 2',
+            'ingredients': <dynamic>[]
+          },
         ]
       });
 
@@ -29,17 +30,19 @@ void main() {
       expect(recipe.name, 'Tomaten-Couscous');
       expect(recipe.servings, 3);
 
-      expect(recipe.ingredients.length, 2);
-      expect(recipe.ingredients[0].amount, 100);
-      expect(recipe.ingredients[0].unit, 'g');
-      expect(recipe.ingredients[0].ingredientName, 'Couscous');
-      expect(recipe.ingredients[1].amount, null);
-      expect(recipe.ingredients[1].unit, null);
-      expect(recipe.ingredients[1].ingredientName, 'Salz');
-
       expect(recipe.steps.length, 2);
       expect(recipe.steps[0].description, 'Step 1');
       expect(recipe.steps[1].description, 'Step 2');
+
+      expect(recipe.steps[0].ingredients.length, 2);
+      expect(recipe.steps[0].ingredients[0].amount, 100);
+      expect(recipe.steps[0].ingredients[0].unit, 'g');
+      expect(recipe.steps[0].ingredients[0].ingredientName, 'Couscous');
+      expect(recipe.steps[0].ingredients[1].amount, null);
+      expect(recipe.steps[0].ingredients[1].unit, null);
+      expect(recipe.steps[0].ingredients[1].ingredientName, 'Salz');
+
+      expect(recipe.steps[1].ingredients.length, 0);
     });
 
     group('change servings', () {
@@ -50,8 +53,7 @@ void main() {
           id: 'abc123',
           name: 'Tomaten-Couscous',
           servings: 2,
-          ingredients: [],
-          steps: [],
+          steps: [RecipeStep(description: 'Step 1', ingredients: [])],
         );
 
         var result = recipe.changeServings(3);
@@ -59,8 +61,8 @@ void main() {
         expect(result.id, recipe.id);
         expect(result.name, recipe.name);
         expect(result.servings, 3);
-        expect(result.ingredients.length, 0);
-        expect(result.steps.length, 0);
+        expect(result.steps.length, 1);
+        expect(result.steps[0].ingredients.length, 0);
       });
 
       test('should return recipe with adjusted servings and ingredient amounts',
@@ -69,14 +71,16 @@ void main() {
           id: 'abc123',
           name: 'Tomaten-Couscous',
           servings: 2,
-          ingredients: [
-            RecipeIngredient(
-                ingredientName: 'Couscous', amount: 100, unit: 'g'),
-            RecipeIngredient(ingredientName: 'Salz'),
-          ],
           steps: [
-            RecipeStep(description: 'Step 1'),
-            RecipeStep(description: 'Step 2')
+            RecipeStep(
+              description: 'Step 1',
+              ingredients: [
+                RecipeIngredient(
+                    ingredientName: 'Couscous', amount: 100, unit: 'g'),
+                RecipeIngredient(ingredientName: 'Salz'),
+              ],
+            ),
+            RecipeStep(description: 'Step 2', ingredients: [])
           ],
         );
 

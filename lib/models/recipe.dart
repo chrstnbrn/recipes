@@ -22,11 +22,11 @@ class Recipe {
       servings: servings,
       steps: steps == null
           ? []
-          : List.from(
-              steps.map<RecipeStep>(
+          : [
+              ...steps.map(
                 (dynamic x) => RecipeStep.fromJson(x as Map<String, dynamic>),
               ),
-            ),
+            ],
     );
   }
 
@@ -35,7 +35,28 @@ class Recipe {
   int servings;
   List<RecipeStep> steps;
 
-  List<RecipeIngredient> get ingredients => [];
+  List<RecipeIngredient> get ingredients {
+    return [
+      ...steps.expand((step) => step.ingredients).fold([], (value, element) {
+        var ingredients = [...value];
+        var index = ingredients.indexWhere((v) =>
+            v.ingredientName == element.ingredientName &&
+            v.unit == element.unit);
+
+        if (index < 0) {
+          ingredients.add(element);
+        } else {
+          var amount = element.amount == null
+              ? null
+              : element.amount + ingredients[index].amount;
+
+          ingredients[index] = element.copyWith(amount: amount);
+        }
+
+        return ingredients;
+      })
+    ];
+  }
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'name': name,
@@ -48,10 +69,7 @@ class Recipe {
       id: id,
       name: name,
       servings: newServings,
-      steps: List.from(
-        steps.map<RecipeStep>(
-            (step) => step.adjustAmount(servings, newServings)),
-      ),
+      steps: [...steps.map((step) => step.adjustAmount(servings, newServings))],
     );
   }
 }

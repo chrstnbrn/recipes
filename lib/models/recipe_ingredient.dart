@@ -15,6 +15,18 @@ class RecipeIngredient {
     );
   }
 
+  RecipeIngredient copyWith({
+    double amount,
+    String unit,
+    String ingredientName,
+  }) {
+    return RecipeIngredient(
+      ingredientName: ingredientName ?? this.ingredientName,
+      amount: amount ?? this.amount,
+      unit: unit ?? this.unit,
+    );
+  }
+
   double amount;
   String unit;
   String ingredientName;
@@ -34,10 +46,7 @@ class RecipeIngredient {
   }
 
   RecipeIngredient adjustAmount(int oldServings, int newServings) {
-    return RecipeIngredient(
-      ingredientName: ingredientName,
-      unit: unit,
-      amount: amount == null ? null : amount / oldServings * newServings,
-    );
+    var newAmount = amount == null ? null : amount / oldServings * newServings;
+    return copyWith(amount: newAmount);
   }
 }
