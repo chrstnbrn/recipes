@@ -4,4 +4,5 @@ class Routes {
   static const recipe = '/recipe';
   static const addRecipe = '/addRecipe';
   static const editRecipe = '/editRecipe';
+  static const stepForm = '/stepForm';
 }

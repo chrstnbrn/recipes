@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import '../models/recipe_step.dart';
+import '../routes.dart';
 import '../widgets/draggable_list.dart';
-import 'step_form.dart';
 
 class StepList extends StatefulWidget {
   const StepList({
@@ -65,10 +65,18 @@ class StepListState extends State<StepList> {
 
   InkWell _buildStep(BuildContext context, RecipeStep step) {
     return InkWell(
-      onTap: () => showDialog<void>(
-        context: context,
-        builder: (context) => _buildEditStepDialog(step),
-      ),
+      onTap: () async {
+        var updatedStep = await Navigator.of(context).pushNamed<RecipeStep>(
+          Routes.stepForm,
+          arguments: {'title': 'Edit Step', 'step': step},
+        );
+
+        if (updatedStep != null) {
+          setState(() {
+            step.description = updatedStep.description;
+          });
+        }
+      },
       child: Text(
         step.description,
         style: Theme.of(context).textTheme.subtitle1,
@@ -78,37 +86,20 @@ class StepListState extends State<StepList> {
 
   Widget _buildAddStepButton() {
     return OutlineButton.icon(
-      icon: const Icon(Icons.add),
-      label: const Text('Add Step'),
-      onPressed: () => showDialog<void>(
-        context: context,
-        builder: (context) => _buildAddStepDialog(),
-      ),
-    );
-  }
+        icon: const Icon(Icons.add),
+        label: const Text('Add Step'),
+        onPressed: () async {
+          var step = RecipeStep(description: '');
+          var newStep = await Navigator.of(context).pushNamed<RecipeStep>(
+            Routes.stepForm,
+            arguments: {'title': 'Add Step', 'step': step},
+          );
 
-  Widget _buildAddStepDialog() {
-    return AlertDialog(
-      title: const Text('Add step'),
-      content: StepForm(
-        step: RecipeStep(),
-        onSubmit: (step) {
-          setState(() {
-            widget.steps.add(step);
-          });
-        },
-      ),
-    );
-  }
-
-  Widget _buildEditStepDialog(RecipeStep step) {
-    return AlertDialog(
-      title: const Text('Edit step'),
-      content: StepForm(
-          step: step,
-          onSubmit: (_) {
-            setState(() {});
-          }),
-    );
+          if (newStep != null) {
+            setState(() {
+              widget.steps.add(newStep);
+            });
+          }
+        });
   }
 }
