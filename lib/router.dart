@@ -4,7 +4,7 @@ import 'routes.dart';
 import 'screens/add_recipe_screen.dart';
 import 'screens/edit_recipe_screen.dart';
 import 'screens/login_screen.dart';
-import 'screens/recipe_detail_screen.dart';
+import 'screens/recipe_detail_screen/recipe_detail_screen.dart';
 import 'screens/recipes_screen.dart';
 
 class Router {

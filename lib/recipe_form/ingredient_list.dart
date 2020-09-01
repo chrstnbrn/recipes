@@ -88,7 +88,7 @@ class IngredientListState extends State<IngredientList> {
     return AlertDialog(
       title: const Text('Add ingredient'),
       content: IngredientForm(
-          ingredient: RecipeIngredient(),
+          ingredient: RecipeIngredient(ingredientName: ''),
           onSubmit: (ingredient) => setState(() {
                 widget.ingredients.add(ingredient);
               })),
