@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 import '../models/recipe.dart';
+import '../models/user.dart';
 import '../providers/auth_provider.dart';
 import '../routes.dart';
 import '../store/recipe_repository.dart';
@@ -26,6 +27,7 @@ class _RecipeState extends State<RecipesScreen> {
   Widget build(BuildContext context) {
     var authProvider = Provider.of<AuthProvider>(context);
     var repository = Provider.of<RecipeRepository>(context);
+    var user = Provider.of<User>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -35,13 +37,14 @@ class _RecipeState extends State<RecipesScreen> {
             textColor: Colors.white,
             onPressed: () {
               authProvider.signOut();
-              Navigator.pushNamed(context, Routes.login);
+              Navigator.of(context).pushReplacementNamed(Routes.login);
             },
             child: const Text('Logout'),
           )
         ],
       ),
-      body: Scrollbar(child: _buildRecipesList(repository.recipes())),
+      body:
+          Scrollbar(child: _buildRecipesList(repository.recipes(user.crewId))),
       floatingActionButton: FloatingActionButton(
           onPressed: () => Navigator.pushNamed(context, Routes.addRecipe),
           child: const Icon(Icons.add)),

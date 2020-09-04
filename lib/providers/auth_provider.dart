@@ -1,50 +1,54 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:rxdart/rxdart.dart';
 
-class AuthProvider extends ChangeNotifier {
-  AuthProvider() {
-    userAuthSub = FirebaseAuth.instance.authStateChanges().listen((newUser) {
-      print('AuthProvider - FirebaseAuth - onAuthStateChanged - $newUser');
-      notifyListeners();
-    }, onError: (dynamic e) {
-      print('AuthProvider - FirebaseAuth - onAuthStateChanged - $e');
-    });
-  }
+import '../models/user.dart';
+import '../store/user_repository.dart';
 
-  StreamSubscription userAuthSub;
+class AuthProvider {
+  AuthProvider(this.userRepository);
+
+  final UserRepository userRepository;
+
+  final auth.FirebaseAuth firebaseAuth = auth.FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
 
-  @override
-  void dispose() {
-    if (userAuthSub != null) {
-      userAuthSub.cancel();
-      userAuthSub = null;
-    }
-    super.dispose();
+  Stream<User> getUser() {
+    return firebaseAuth.userChanges().transform(
+          SwitchMapStreamTransformer<auth.User, User>(
+            (user) => user == null
+                ? Stream.value(null)
+                : userRepository.getUser(user.uid).map(
+                      (dbUser) => User(
+                        id: user.uid,
+                        name: user.displayName,
+                        crewId: dbUser?.crew,
+                      ),
+                    ),
+          ),
+        );
   }
 
   bool get isAuthenticated {
-    return FirebaseAuth.instance.currentUser != null;
+    return firebaseAuth.currentUser != null;
   }
 
-  Future<UserCredential> signInWithGoogle() async {
+  Future<auth.UserCredential> signInWithGoogle() async {
     final account = await googleSignIn.signIn();
-
     final authentication = await account.authentication;
 
-    final AuthCredential credential = GoogleAuthProvider.credential(
+    final credential = auth.GoogleAuthProvider.credential(
       accessToken: authentication.accessToken,
       idToken: authentication.idToken,
     );
 
-    return FirebaseAuth.instance.signInWithCredential(credential);
+    return firebaseAuth.signInWithCredential(credential);
   }
 
   void signOut() async {
     await googleSignIn.signOut();
-    await FirebaseAuth.instance.signOut();
+    await firebaseAuth.signOut();
   }
 }

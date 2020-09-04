@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/recipe.dart';
+import '../models/user.dart';
 import '../recipe_form/recipe_form.dart';
 import '../store/recipe_repository.dart';
 
@@ -13,13 +14,14 @@ class EditRecipeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var repository = Provider.of<RecipeRepository>(context);
+    var user = Provider.of<User>(context);
 
     return FutureBuilder<Recipe>(
-      future: repository.recipe(recipeId).first,
+      future: repository.recipe(recipeId, user.crewId).first,
       builder: (context, snapshot) {
         if (!snapshot.hasData) return Container();
 
-        return _buildContent(context, repository, snapshot.data);
+        return _buildContent(context, repository, snapshot.data, user);
       },
     );
   }
@@ -28,6 +30,7 @@ class EditRecipeScreen extends StatelessWidget {
     BuildContext context,
     RecipeRepository repository,
     Recipe recipe,
+    User user,
   ) {
     final formKey = GlobalKey<RecipeFormState>();
 
@@ -44,7 +47,7 @@ class EditRecipeScreen extends StatelessWidget {
             onPressed: () {
               var recipe = formKey.currentState.submit();
               if (recipe != null) {
-                repository.updateRecipe(recipe);
+                repository.updateRecipe(recipe, user.crewId);
                 Navigator.pop(context);
               }
             },

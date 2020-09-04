@@ -3,58 +3,73 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'models/user.dart';
 import 'providers/auth_provider.dart';
 import 'router.dart';
 import 'routes.dart';
 import 'store/recipe_repository.dart';
+import 'store/user_repository.dart';
 import 'theme/style.dart';
 
-void main() => runApp(const RecipesApp());
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(RecipesApp());
+}
 
 class RecipesApp extends StatelessWidget {
-  const RecipesApp({Key key}) : super(key: key);
+  RecipesApp({Key key}) : super(key: key);
+
+  final Future<bool> _initialization = Firebase.initializeApp().then(
+    (value) => FirebaseDatabase.instance.setPersistenceEnabled(true),
+  );
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: Firebase.initializeApp().then(
-          (value) => FirebaseDatabase.instance.setPersistenceEnabled(true),
-        ),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return CircularProgressIndicator(
-              backgroundColor: Theme.of(context).errorColor,
-            );
-          }
+      future: _initialization,
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return CircularProgressIndicator(
+            backgroundColor: Theme.of(context).errorColor,
+          );
+        }
 
-          if (snapshot.connectionState == ConnectionState.done) {
-            return MultiProvider(
-              providers: [
-                ChangeNotifierProvider<AuthProvider>(
-                  create: (context) => AuthProvider(),
-                ),
-                Provider<RecipeRepository>(
-                  create: (context) => RecipeRepository(
-                    FirebaseDatabase.instance.reference(),
-                  ),
-                ),
-              ],
-              child: Builder(
-                builder: (context) {
-                  var authProvider = Provider.of<AuthProvider>(context);
-                  return MaterialApp(
-                      title: 'Recipes',
-                      theme: appTheme(),
-                      initialRoute: authProvider.isAuthenticated
-                          ? Routes.recipes
-                          : Routes.login,
-                      onGenerateRoute: Router.generateRoute);
-                },
+        if (snapshot.connectionState == ConnectionState.done) {
+          var database = FirebaseDatabase.instance.reference();
+          return MultiProvider(
+            providers: [
+              Provider<AuthProvider>(
+                create: (context) => AuthProvider(UserRepository(database)),
               ),
-            );
-          }
+              Provider<RecipeRepository>(
+                create: (context) => RecipeRepository(database),
+              )
+            ],
+            child: Builder(
+              builder: (context) {
+                var authProvider = Provider.of<AuthProvider>(context);
 
-          return const CircularProgressIndicator();
-        });
+                return StreamBuilder<User>(
+                    stream: authProvider.getUser(),
+                    builder: (context, snapshot) {
+                      return Provider<User>(
+                        create: (context) => snapshot.data,
+                        builder: (context, child) => MaterialApp(
+                          title: 'Recipes',
+                          theme: appTheme(),
+                          initialRoute:
+                              snapshot.hasData ? Routes.recipes : Routes.login,
+                          onGenerateRoute: Router.generateRoute,
+                        ),
+                      );
+                    });
+              },
+            ),
+          );
+        }
+
+        return const CircularProgressIndicator();
+      },
+    );
   }
 }

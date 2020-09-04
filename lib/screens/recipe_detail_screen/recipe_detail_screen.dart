@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/recipe.dart';
+import '../../models/user.dart';
 import '../../routes.dart';
 import '../../store/recipe_detail_service.dart';
 import '../../store/recipe_repository.dart';
@@ -18,7 +19,12 @@ class RecipeDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var repository = Provider.of<RecipeRepository>(context);
-    var service = RecipeDetailService(recipeId, repository);
+    var user = Provider.of<User>(context);
+    var service = RecipeDetailService(
+      recipeId: recipeId,
+      crewId: user?.crewId,
+      repository: repository,
+    );
 
     return StreamBuilder<Recipe>(
       stream: service.recipe$,
@@ -47,7 +53,7 @@ class RecipeDetailScreen extends StatelessWidget {
                   context: context,
                   builder: (context) => _buildConfirmDeletionDialog(
                     onConfirm: () async {
-                      await repository.deleteRecipe(recipe.id);
+                      await repository.deleteRecipe(recipe.id, user.crewId);
                       Navigator.of(context)..pop()..pop();
                     },
                     onCancel: () => Navigator.of(context).pop(),

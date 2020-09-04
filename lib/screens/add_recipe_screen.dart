@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/recipe.dart';
+import '../models/user.dart';
 import '../recipe_form/recipe_form.dart';
 import '../store/recipe_repository.dart';
 
@@ -11,6 +12,8 @@ class AddRecipeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var repository = Provider.of<RecipeRepository>(context);
+    var user = Provider.of<User>(context);
+
     final formKey = GlobalKey<RecipeFormState>();
 
     return Scaffold(
@@ -26,7 +29,7 @@ class AddRecipeScreen extends StatelessWidget {
             onPressed: () {
               var recipe = formKey.currentState.submit();
               if (recipe != null) {
-                repository.addRecipe(recipe);
+                repository.addRecipe(recipe, user.crewId);
                 Navigator.pop(context);
               }
             },

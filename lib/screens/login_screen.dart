@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/auth_provider.dart';
+import '../routes.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key key}) : super(key: key);
@@ -38,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
       splashColor: Colors.grey,
       onPressed: () {
         authProvider.signInWithGoogle().then((value) {
-          Navigator.pop(context);
+          Navigator.pushReplacementNamed(context, Routes.recipes);
         }).catchError(print);
       },
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
