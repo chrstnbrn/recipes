@@ -38,7 +38,17 @@ class _RecipeInstructionScreenState extends State<RecipeInstructionScreen> {
       body: SizedBox.expand(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
-          child: _buildSteps(context),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _buildSteps(context),
+              RaisedButton.icon(
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(Icons.check_circle_outline),
+                label: const Text('Done!'),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -67,7 +77,7 @@ class _RecipeInstructionScreenState extends State<RecipeInstructionScreen> {
             Container(
               margin: const EdgeInsets.only(top: 16),
               child: _buildIngredients(context, step.ingredients),
-            )
+            ),
           ],
         ),
       ),
