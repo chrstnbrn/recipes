@@ -19,9 +19,8 @@ void main() {
 class RecipesApp extends StatelessWidget {
   RecipesApp({Key key}) : super(key: key);
 
-  final Future<bool> _initialization = Firebase.initializeApp().then(
-    (value) => FirebaseDatabase.instance.setPersistenceEnabled(true),
-  );
+  final Future<void> _initialization = Firebase.initializeApp()
+      .then((value) => FirebaseDatabase.instance.setPersistenceEnabled(true));
 
   @override
   Widget build(BuildContext context) {
@@ -50,19 +49,18 @@ class RecipesApp extends StatelessWidget {
                 var authProvider = Provider.of<AuthProvider>(context);
 
                 return StreamBuilder<User>(
-                    stream: authProvider.getUser(),
-                    builder: (context, snapshot) {
-                      return Provider<User>(
-                        create: (context) => snapshot.data,
-                        builder: (context, child) => MaterialApp(
-                          title: 'Recipes',
-                          theme: appTheme(),
-                          initialRoute:
-                              snapshot.hasData ? Routes.recipes : Routes.login,
-                          onGenerateRoute: Router.generateRoute,
-                        ),
-                      );
-                    });
+                  stream: authProvider.getUser(),
+                  builder: (context, snapshot) => Provider<User>(
+                    create: (context) => snapshot.data,
+                    builder: (context, child) => MaterialApp(
+                      title: 'Recipes',
+                      theme: appTheme(),
+                      initialRoute:
+                          snapshot.hasData ? Routes.recipes : Routes.login,
+                      onGenerateRoute: Router.generateRoute,
+                    ),
+                  ),
+                );
               },
             ),
           );
