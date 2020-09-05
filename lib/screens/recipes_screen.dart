@@ -35,10 +35,7 @@ class _RecipeState extends State<RecipesScreen> {
         actions: [
           FlatButton(
             textColor: Colors.white,
-            onPressed: () {
-              authProvider.signOut();
-              Navigator.of(context).pushReplacementNamed(Routes.login);
-            },
+            onPressed: () => authProvider.signOut(),
             child: const Text('Logout'),
           )
         ],
@@ -46,8 +43,9 @@ class _RecipeState extends State<RecipesScreen> {
       body:
           Scrollbar(child: _buildRecipesList(repository.recipes(user.crewId))),
       floatingActionButton: FloatingActionButton(
-          onPressed: () => Navigator.pushNamed(context, Routes.addRecipe),
-          child: const Icon(Icons.add)),
+        onPressed: () => Navigator.pushNamed(context, Routes.addRecipe),
+        child: const Icon(Icons.add),
+      ),
     );
   }
 

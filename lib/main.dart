@@ -3,10 +3,10 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'app.dart';
 import 'models/user.dart';
 import 'providers/auth_provider.dart';
-import 'router.dart';
-import 'routes.dart';
+import 'screens/login_screen.dart';
 import 'store/recipe_repository.dart';
 import 'store/user_repository.dart';
 import 'theme/style.dart';
@@ -55,9 +55,8 @@ class RecipesApp extends StatelessWidget {
                     builder: (context, child) => MaterialApp(
                       title: 'Recipes',
                       theme: appTheme(),
-                      initialRoute:
-                          snapshot.hasData ? Routes.recipes : Routes.login,
-                      onGenerateRoute: Router.generateRoute,
+                      home:
+                          snapshot.hasData ? const App() : const LoginScreen(),
                     ),
                   ),
                 );
