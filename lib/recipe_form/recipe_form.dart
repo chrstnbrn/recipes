@@ -60,11 +60,13 @@ class RecipeFormState extends State<RecipeForm> {
         content: const Text('Unsaved data will be lost.'),
         actions: <Widget>[
           FlatButton(
-            onPressed: () => Navigator.of(context).pop(false),
+            onPressed: () =>
+                Navigator.of(context, rootNavigator: true).pop(false),
             child: const Text('Cancel'),
           ),
           FlatButton(
-            onPressed: () => Navigator.of(context).pop(true),
+            onPressed: () =>
+                Navigator.of(context, rootNavigator: true).pop(true),
             child: const Text('Discard'),
           ),
         ],
