@@ -21,7 +21,7 @@ class BottomNavigation extends StatelessWidget {
           title: Text('Recipes'),
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.shopping_cart),
+          icon: Icon(Icons.shopping_basket),
           title: Text('Shopping List'),
         ),
       ],
