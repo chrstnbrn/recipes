@@ -4,6 +4,7 @@ import 'package:wakelock/wakelock.dart';
 import '../../models/recipe.dart';
 import '../../models/recipe_ingredient.dart';
 import '../../models/recipe_step.dart';
+import '../../widgets/screen_body.dart';
 
 class RecipeInstructionScreen extends StatefulWidget {
   const RecipeInstructionScreen({Key key, @required this.recipe})
@@ -35,20 +36,17 @@ class _RecipeInstructionScreenState extends State<RecipeInstructionScreen> {
       appBar: AppBar(
         title: Text(widget.recipe.name),
       ),
-      body: SizedBox.expand(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _buildSteps(context),
-              RaisedButton.icon(
-                onPressed: () => Navigator.pop(context),
-                icon: const Icon(Icons.check_circle_outline),
-                label: const Text('Done!'),
-              ),
-            ],
-          ),
+      body: ScreenBody(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _buildSteps(context),
+            RaisedButton.icon(
+              onPressed: () => Navigator.pop(context),
+              icon: const Icon(Icons.check_circle_outline),
+              label: const Text('Done!'),
+            ),
+          ],
         ),
       ),
     );

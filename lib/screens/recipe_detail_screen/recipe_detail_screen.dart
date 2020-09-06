@@ -8,6 +8,7 @@ import '../../models/user.dart';
 import '../../routes.dart';
 import '../../store/recipe_detail_service.dart';
 import '../../store/recipe_repository.dart';
+import '../../widgets/screen_body.dart';
 import 'recipe_detail_ingredients.dart';
 import 'recipe_detail_steps.dart';
 
@@ -64,13 +65,10 @@ class RecipeDetailScreen extends StatelessWidget {
               ),
             ],
           ),
-          body: SizedBox.expand(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
-              child: _buildRecipeDetail(
-                recipe,
-                (servings) => service.changeServings(servings),
-              ),
+          body: ScreenBody(
+            child: _buildRecipeDetail(
+              recipe,
+              (servings) => service.changeServings(servings),
             ),
           ),
           floatingActionButton: FloatingActionButton(

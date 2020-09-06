@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../widgets/screen_body.dart';
+
 class ShoppingListScreen extends StatelessWidget {
   const ShoppingListScreen({Key key}) : super(key: key);
 
@@ -10,7 +12,7 @@ class ShoppingListScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Shopping List'),
       ),
-      body: const Scrollbar(child: Text('Shopping List')),
+      body: const ScreenBody(child: Text('Shopping List')),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
         child: const Icon(Icons.add),

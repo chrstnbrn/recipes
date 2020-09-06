@@ -5,6 +5,7 @@ import '../models/recipe.dart';
 import '../models/user.dart';
 import '../recipe_form/recipe_form.dart';
 import '../store/recipe_repository.dart';
+import '../widgets/screen_body.dart';
 
 class EditRecipeScreen extends StatelessWidget {
   const EditRecipeScreen({Key key, @required this.recipeId}) : super(key: key);
@@ -54,11 +55,8 @@ class EditRecipeScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: SizedBox.expand(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: RecipeForm(key: formKey, recipe: recipe),
-        ),
+      body: ScreenBody(
+        child: RecipeForm(key: formKey, recipe: recipe),
       ),
     );
   }

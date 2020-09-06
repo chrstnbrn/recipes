@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/recipe_step.dart';
+import '../../widgets/screen_body.dart';
 import 'ingredient_list.dart';
 
 class RecipeStepScreen extends StatelessWidget {
@@ -36,11 +37,7 @@ class RecipeStepScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: SizedBox.expand(
-        child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
-            child: _buildStepForm(context, formKey)),
-      ),
+      body: ScreenBody(child: _buildStepForm(context, formKey)),
     );
   }
 
