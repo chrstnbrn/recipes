@@ -40,10 +40,13 @@ class _RecipeState extends State<RecipesScreen> {
           )
         ],
       ),
-      body:
-          Scrollbar(child: _buildRecipesList(repository.recipes(user.crewId))),
+      body: Scrollbar(
+        child: _buildRecipesList(repository.recipes(user.crewId)),
+      ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.pushNamed(context, Routes.addRecipe),
+        heroTag: null,
+        onPressed: () => Navigator.of(context, rootNavigator: true)
+            .pushNamed(Routes.addRecipe),
         child: const Icon(Icons.add),
       ),
     );
@@ -67,8 +70,8 @@ class _RecipeState extends State<RecipesScreen> {
 
   Widget _buildRow(Recipe recipe) {
     return ListTile(
-      onTap: () => Navigator.pushNamed(context, Routes.recipe,
-          arguments: {'recipeId': recipe.id}),
+      onTap: () => Navigator.of(context)
+          .pushNamed(Routes.recipe, arguments: {'recipeId': recipe.id}),
       title: Text(
         recipe.name,
         style: _biggerFont,

@@ -37,10 +37,7 @@ class Router {
         final title = arguments['title'] as String;
         final step = arguments['step'] as RecipeStep;
         return MaterialPageRoute<RecipeStep>(
-          builder: (context) => RecipeStepScreen(
-            title: title,
-            step: step,
-          ),
+          builder: (context) => RecipeStepScreen(title: title, step: step),
         );
       case Routes.recipeInstruction:
         final recipe = arguments['recipe'] as Recipe;

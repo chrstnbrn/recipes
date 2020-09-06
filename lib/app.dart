@@ -35,7 +35,8 @@ class AppState extends State<App> {
       },
       child: Scaffold(
         body: Stack(
-            children: [...NavigationItem.values.map(_buildOffstageNavigator)]),
+            children:
+                NavigationItem.values.map(_buildOffstageNavigator).toList()),
         bottomNavigationBar: BottomNavigation(
           currentItem: _currentItem,
           onSelectItem: _selectItem,

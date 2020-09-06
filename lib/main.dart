@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'app.dart';
 import 'models/user.dart';
 import 'providers/auth_provider.dart';
+import 'router.dart';
 import 'screens/login_screen.dart';
 import 'store/recipe_repository.dart';
 import 'store/user_repository.dart';
@@ -57,6 +58,7 @@ class RecipesApp extends StatelessWidget {
                       theme: appTheme(),
                       home:
                           snapshot.hasData ? const App() : const LoginScreen(),
+                      onGenerateRoute: Router.generateRoute,
                     ),
                   ),
                 );

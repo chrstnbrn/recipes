@@ -41,8 +41,10 @@ class RecipeDetailScreen extends StatelessWidget {
             actions: [
               IconButton(
                 icon: const Icon(Icons.edit),
-                onPressed: () => Navigator.pushNamed(
+                onPressed: () => Navigator.of(
                   context,
+                  rootNavigator: true,
+                ).pushNamed(
                   Routes.editRecipe,
                   arguments: {'recipeId': recipe.id},
                 ),
@@ -72,9 +74,12 @@ class RecipeDetailScreen extends StatelessWidget {
             ),
           ),
           floatingActionButton: FloatingActionButton(
+            heroTag: null,
             onPressed: () {
-              Navigator.pushNamed(
+              Navigator.of(
                 context,
+                rootNavigator: true,
+              ).pushNamed(
                 Routes.recipeInstruction,
                 arguments: {'recipe': recipe},
               );
