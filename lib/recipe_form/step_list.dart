@@ -69,14 +69,14 @@ class StepList extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            step.description,
-            style: Theme.of(context).textTheme.subtitle1,
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: Text(
+              step.description,
+              style: Theme.of(context).textTheme.subtitle1,
+            ),
           ),
-          Container(
-            margin: const EdgeInsets.only(top: 16),
-            child: _buildIngredients(context, step.ingredients),
-          )
+          _buildIngredients(context, step.ingredients)
         ],
       ),
     );
@@ -86,15 +86,20 @@ class StepList extends StatelessWidget {
     BuildContext context,
     List<RecipeIngredient> ingredients,
   ) {
-    return Wrap(
-      spacing: 16,
-      runSpacing: 8,
-      children: [
-        ...ingredients.map(
-          (i) =>
-              Text(i.toString(), style: Theme.of(context).textTheme.subtitle2),
-        ),
-      ],
+    return Flexible(
+      flex: 1,
+      child: Wrap(
+        spacing: 16,
+        runSpacing: 8,
+        children: [
+          ...ingredients.map(
+            (i) => Text(
+              i.toString(),
+              style: Theme.of(context).textTheme.subtitle2,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
