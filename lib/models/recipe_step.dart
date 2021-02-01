@@ -11,12 +11,10 @@ class RecipeStep {
       description: json['description'] as String,
       ingredients: ingredients == null
           ? []
-          : List.from(
-              ingredients.map<RecipeIngredient>(
-                (dynamic x) =>
-                    RecipeIngredient.fromJson(x as Map<String, dynamic>),
-              ),
-            ),
+          : ingredients
+              .map((dynamic x) =>
+                  RecipeIngredient.fromJson(x as Map<String, dynamic>))
+              .toList(),
     );
   }
 
@@ -25,18 +23,15 @@ class RecipeStep {
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'description': description,
-        'ingredients':
-            List<dynamic>.from(ingredients.map<dynamic>((x) => x.toJson())),
+        'ingredients': ingredients.map((x) => x.toJson()).toList(),
       };
 
   RecipeStep adjustAmount(int oldServings, int newServings) {
     return RecipeStep(
       description: description,
-      ingredients: [
-        ...ingredients.map<RecipeIngredient>(
-          (e) => e.adjustAmount(oldServings, newServings),
-        )
-      ],
+      ingredients: ingredients
+          .map((e) => e.adjustAmount(oldServings, newServings))
+          .toList(),
     );
   }
 }

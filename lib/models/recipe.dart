@@ -22,11 +22,11 @@ class Recipe {
       servings: servings,
       steps: steps == null
           ? []
-          : [
-              ...steps.map(
+          : steps
+              .map(
                 (dynamic x) => RecipeStep.fromJson(x as Map<String, dynamic>),
-              ),
-            ],
+              )
+              .toList(),
     );
   }
 

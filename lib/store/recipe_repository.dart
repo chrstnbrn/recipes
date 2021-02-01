@@ -19,8 +19,10 @@ class RecipeRepository {
       final recipeMap =
           jsonDecode(jsonEncode(event.snapshot.value)) as Map<String, dynamic>;
 
-      return List<Recipe>.from(recipeMap.entries.map<Recipe>((entry) =>
-          Recipe.fromJson(entry.key, entry.value as Map<String, dynamic>)));
+      return recipeMap.entries
+          .map((entry) =>
+              Recipe.fromJson(entry.key, entry.value as Map<String, dynamic>))
+          .toList();
     });
   }
 
