@@ -33,8 +33,8 @@ class _RecipeState extends State<RecipesScreen> {
       appBar: AppBar(
         title: const Text('Recipes'),
         actions: [
-          FlatButton(
-            textColor: Colors.white,
+          TextButton(
+            style: TextButton.styleFrom(primary: Colors.white),
             onPressed: () => authProvider.signOut(),
             child: const Text('Logout'),
           )

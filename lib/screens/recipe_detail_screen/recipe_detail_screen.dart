@@ -125,11 +125,11 @@ class RecipeDetailScreen extends StatelessWidget {
     return AlertDialog(
       title: const Text('Delete recipe?'),
       actions: [
-        FlatButton(
+        TextButton(
           onPressed: onCancel,
           child: const Text('Cancel'),
         ),
-        FlatButton(
+        TextButton(
           onPressed: onConfirm,
           child: const Text('Delete'),
         ),
