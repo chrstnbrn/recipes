@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import 'router.dart';
+import 'router.dart' as recipe_router;
 import 'routes.dart';
 import 'widgets/bottom_navigation.dart';
 
@@ -51,7 +51,7 @@ class AppState extends State<App> {
       child: Navigator(
         key: _navigatorKeys[navigationItem],
         initialRoute: _getInitialRoute(navigationItem),
-        onGenerateRoute: Router.generateRoute,
+        onGenerateRoute: recipe_router.Router.generateRoute,
       ),
     );
   }
