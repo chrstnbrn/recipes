@@ -22,24 +22,42 @@ class RecipeInstructionStep extends StatelessWidget {
       child: AnimatedOpacity(
         opacity: step.isChecked ? 0.5 : 1.0,
         duration: const Duration(milliseconds: 200),
-        child: Card(
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  step.description,
-                  style: Theme.of(context).textTheme.subtitle1,
-                ),
-                Container(
-                  margin: const EdgeInsets.only(top: 16),
-                  child: _buildIngredients(context, step.ingredients),
-                ),
-              ],
+        child: Stack(
+          alignment: AlignmentDirectional.center,
+          children: [
+            _buildCard(context),
+            if (step.isChecked) _buildCheckMarkIcon(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Icon _buildCheckMarkIcon() {
+    return Icon(
+      Icons.check_circle_outline,
+      size: 56,
+      color: Colors.lightGreen.withOpacity(0.6),
+    );
+  }
+
+  Card _buildCard(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              step.description,
+              style: Theme.of(context).textTheme.subtitle1,
             ),
-          ),
+            Container(
+              margin: const EdgeInsets.only(top: 16),
+              child: _buildIngredients(context, step.ingredients),
+            ),
+          ],
         ),
       ),
     );
