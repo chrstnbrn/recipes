@@ -4,7 +4,18 @@ import 'package:wakelock/wakelock.dart';
 
 import '../../models/recipe.dart';
 import '../../models/recipe_ingredient.dart';
-import '../../models/recipe_step.dart';
+
+class RecipeStepViewModel {
+  RecipeStepViewModel({
+    @required this.description,
+    @required this.ingredients,
+    this.isChecked = false,
+  });
+
+  String description;
+  List<RecipeIngredient> ingredients;
+  bool isChecked;
+}
 
 class RecipeInstructionScreen extends StatefulWidget {
   const RecipeInstructionScreen({Key key, @required this.recipe})
@@ -18,10 +29,21 @@ class RecipeInstructionScreen extends StatefulWidget {
 }
 
 class _RecipeInstructionScreenState extends State<RecipeInstructionScreen> {
+  List<RecipeStepViewModel> _stepViewModels;
+  final itemScrollController = ItemScrollController();
+  final itemPositionsListener = ItemPositionsListener.create();
+
   @override
   void initState() {
     Wakelock.enable();
     super.initState();
+
+    _stepViewModels = widget.recipe.steps
+        .map(
+          (r) => RecipeStepViewModel(
+              description: r.description, ingredients: r.ingredients),
+        )
+        .toList();
   }
 
   @override
@@ -32,9 +54,6 @@ class _RecipeInstructionScreenState extends State<RecipeInstructionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final itemScrollController = ItemScrollController();
-    final itemPositionsListener = ItemPositionsListener.create();
-
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.recipe.name),
@@ -46,53 +65,70 @@ class _RecipeInstructionScreenState extends State<RecipeInstructionScreen> {
           child: ScrollablePositionedList.builder(
             itemScrollController: itemScrollController,
             itemPositionsListener: itemPositionsListener,
-            itemCount: widget.recipe.steps.length + 1,
-            itemBuilder: (context, index) => index == widget.recipe.steps.length
-                ? Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: RaisedButton.icon(
-                      onPressed: () => Navigator.pop(context),
-                      icon: const Icon(Icons.check_circle_outline),
-                      label: const Text('Done!'),
-                    ),
-                  )
-                : _buildStep(
-                    context,
-                    widget.recipe.steps[index],
-                    onTap: () => itemScrollController.scrollTo(
-                      index: index + 1,
-                      duration: const Duration(milliseconds: 100),
-                    ),
-                  ),
+            itemCount: _stepViewModels.length + 1,
+            itemBuilder: (context, index) {
+              return index == _stepViewModels.length
+                  ? _buildDoneButton(context)
+                  : _buildStep(
+                      context,
+                      _stepViewModels[index],
+                      onTap: () => onTapStep(index),
+                    );
+            },
           ),
         ),
       ),
     );
   }
 
+  void onTapStep(int index) {
+    setState(() =>
+        _stepViewModels[index].isChecked = !_stepViewModels[index].isChecked);
+
+    if (scrollToNextStep(index)) {
+      Future.delayed(const Duration(milliseconds: 300), () {
+        if (itemScrollController.isAttached) {
+          itemScrollController.scrollTo(
+            index: index + 1,
+            duration: const Duration(milliseconds: 300),
+          );
+        }
+      });
+    }
+  }
+
+  bool scrollToNextStep(int index) {
+    var previousSteps = _stepViewModels.take(index + 1);
+    return previousSteps.every((step) => step.isChecked);
+  }
+
   Widget _buildStep(
     BuildContext context,
-    RecipeStep step, {
-    Future<void> Function() onTap,
+    RecipeStepViewModel step, {
+    Function() onTap,
   }) {
     return InkWell(
       onTap: () => onTap(),
-      child: Card(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                step.description,
-                style: Theme.of(context).textTheme.subtitle1,
-              ),
-              Container(
-                margin: const EdgeInsets.only(top: 16),
-                child: _buildIngredients(context, step.ingredients),
-              ),
-            ],
+      child: AnimatedOpacity(
+        opacity: step.isChecked ? 0.5 : 1.0,
+        duration: const Duration(milliseconds: 200),
+        child: Card(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  step.description,
+                  style: Theme.of(context).textTheme.subtitle1,
+                ),
+                Container(
+                  margin: const EdgeInsets.only(top: 16),
+                  child: _buildIngredients(context, step.ingredients),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -112,6 +148,17 @@ class _RecipeInstructionScreenState extends State<RecipeInstructionScreen> {
               Text(i.toString(), style: Theme.of(context).textTheme.subtitle2),
         ),
       ],
+    );
+  }
+
+  Container _buildDoneButton(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: RaisedButton.icon(
+        onPressed: () => Navigator.pop(context),
+        icon: const Icon(Icons.check_circle_outline),
+        label: const Text('Done!'),
+      ),
     );
   }
 }
