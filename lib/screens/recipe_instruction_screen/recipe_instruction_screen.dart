@@ -31,8 +31,8 @@ class RecipeInstructionScreen extends StatefulWidget {
 
 class _RecipeInstructionScreenState extends State<RecipeInstructionScreen> {
   List<RecipeStepViewModel> _stepViewModels;
-  final itemScrollController = ItemScrollController();
-  final itemPositionsListener = ItemPositionsListener.create();
+  final _itemScrollController = ItemScrollController();
+  final _itemPositionsListener = ItemPositionsListener.create();
 
   @override
   void initState() {
@@ -64,15 +64,15 @@ class _RecipeInstructionScreenState extends State<RecipeInstructionScreen> {
           padding: const EdgeInsets.symmetric(vertical: 8),
           decoration: BoxDecoration(color: Colors.grey.shade100),
           child: ScrollablePositionedList.builder(
-            itemScrollController: itemScrollController,
-            itemPositionsListener: itemPositionsListener,
+            itemScrollController: _itemScrollController,
+            itemPositionsListener: _itemPositionsListener,
             itemCount: _stepViewModels.length + 1,
             itemBuilder: (context, index) => index == _stepViewModels.length
                 ? _buildDoneButton(context)
                 : RecipeInstructionStep(
                     context: context,
                     step: _stepViewModels[index],
-                    onTap: () => onTapStep(index),
+                    onTap: () => _onTapStep(index),
                   ),
           ),
         ),
@@ -80,19 +80,20 @@ class _RecipeInstructionScreenState extends State<RecipeInstructionScreen> {
     );
   }
 
-  void onTapStep(int index) {
+  void _onTapStep(int index) {
     setState(() =>
         _stepViewModels[index].isChecked = !_stepViewModels[index].isChecked);
 
-    var firstUncheckedStepIndex = getFirstUncheckedStepIndex();
+    var firstUncheckedStepIndex = _getFirstUncheckedStepIndex();
     if (firstUncheckedStepIndex > index) {
       Future.delayed(
         const Duration(milliseconds: 300),
         () {
-          if (itemScrollController.isAttached) {
-            itemScrollController.scrollTo(
+          if (_itemScrollController.isAttached) {
+            _itemScrollController.scrollTo(
               index: firstUncheckedStepIndex,
               duration: const Duration(milliseconds: 300),
+              curve: Curves.easeIn,
             );
           }
         },
@@ -100,7 +101,7 @@ class _RecipeInstructionScreenState extends State<RecipeInstructionScreen> {
     }
   }
 
-  int getFirstUncheckedStepIndex() {
+  int _getFirstUncheckedStepIndex() {
     return _stepViewModels.indexWhere((step) => !step.isChecked);
   }
 
