@@ -67,14 +67,13 @@ class _RecipeInstructionScreenState extends State<RecipeInstructionScreen> {
             itemScrollController: itemScrollController,
             itemPositionsListener: itemPositionsListener,
             itemCount: _stepViewModels.length + 1,
-            itemBuilder: (context, index) {
-              return index == _stepViewModels.length
-                  ? _buildDoneButton(context)
-                  : RecipeInstructionStep(
-                      context: context,
-                      step: _stepViewModels[index],
-                      onTap: () => onTapStep(index));
-            },
+            itemBuilder: (context, index) => index == _stepViewModels.length
+                ? _buildDoneButton(context)
+                : RecipeInstructionStep(
+                    context: context,
+                    step: _stepViewModels[index],
+                    onTap: () => onTapStep(index),
+                  ),
           ),
         ),
       ),
@@ -85,13 +84,14 @@ class _RecipeInstructionScreenState extends State<RecipeInstructionScreen> {
     setState(() =>
         _stepViewModels[index].isChecked = !_stepViewModels[index].isChecked);
 
-    if (scrollToNextStep(index)) {
+    var firstUncheckedStepIndex = getFirstUncheckedStepIndex();
+    if (firstUncheckedStepIndex > index) {
       Future.delayed(
         const Duration(milliseconds: 300),
         () {
           if (itemScrollController.isAttached) {
             itemScrollController.scrollTo(
-              index: index + 1,
+              index: firstUncheckedStepIndex,
               duration: const Duration(milliseconds: 300),
             );
           }
@@ -100,9 +100,8 @@ class _RecipeInstructionScreenState extends State<RecipeInstructionScreen> {
     }
   }
 
-  bool scrollToNextStep(int index) {
-    var previousSteps = _stepViewModels.take(index + 1);
-    return previousSteps.every((step) => step.isChecked);
+  int getFirstUncheckedStepIndex() {
+    return _stepViewModels.indexWhere((step) => !step.isChecked);
   }
 
   Container _buildDoneButton(BuildContext context) {
