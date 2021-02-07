@@ -41,28 +41,10 @@ class RecipeDetailScreen extends StatelessWidget {
             title: Text(recipe.name),
             actions: [
               IconButton(
-                icon: const Icon(Icons.edit),
-                onPressed: () => Navigator.of(
-                  context,
-                  rootNavigator: true,
-                ).pushNamed(
-                  Routes.editRecipe,
-                  arguments: {'recipeId': recipe.id},
-                ),
+                icon: const Icon(Icons.shopping_basket),
+                onPressed: () => _onAddToShoppingList(recipe),
               ),
-              IconButton(
-                icon: const Icon(Icons.delete),
-                onPressed: () => showDialog<void>(
-                  context: context,
-                  builder: (context) => _buildConfirmDeletionDialog(
-                    onConfirm: () async {
-                      await repository.deleteRecipe(recipe.id, user.crewId);
-                      Navigator.of(context)..pop()..pop();
-                    },
-                    onCancel: () => Navigator.of(context).pop(),
-                  ),
-                ),
-              ),
+              _buildPopupMenuButton(context, recipe, repository, user),
             ],
           ),
           body: ScreenBody(
@@ -86,6 +68,68 @@ class RecipeDetailScreen extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  PopupMenuButton<String> _buildPopupMenuButton(
+    BuildContext context,
+    Recipe recipe,
+    RecipeRepository repository,
+    User user,
+  ) {
+    return PopupMenuButton<String>(
+      itemBuilder: (context) {
+        return [
+          const PopupMenuItem(
+            value: 'Edit',
+            child: Text('Edit'),
+          ),
+          const PopupMenuItem(
+            value: 'Delete',
+            child: Text('Delete'),
+          ),
+        ];
+      },
+      onSelected: (value) {
+        switch (value) {
+          case 'Edit':
+            _onEdit(context, recipe);
+            break;
+          case 'Delete':
+            _onDelete(context, repository, recipe, user);
+            break;
+        }
+      },
+    );
+  }
+
+  void _onAddToShoppingList(Recipe recipe) {}
+
+  void _onEdit(BuildContext context, Recipe recipe) {
+    Navigator.of(
+      context,
+      rootNavigator: true,
+    ).pushNamed(
+      Routes.editRecipe,
+      arguments: {'recipeId': recipe.id},
+    );
+  }
+
+  void _onDelete(
+    BuildContext context,
+    RecipeRepository repository,
+    Recipe recipe,
+    User user,
+  ) {
+    showDialog<void>(
+      context: context,
+      builder: (context) => _buildConfirmDeletionDialog(
+        onConfirm: () async {
+          await repository.deleteRecipe(recipe.id, user.crewId);
+          Navigator.of(context)..pop()..pop();
+        },
+        onCancel: () => Navigator.of(context).pop(),
+      ),
     );
   }
 
