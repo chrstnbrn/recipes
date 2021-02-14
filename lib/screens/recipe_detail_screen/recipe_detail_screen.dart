@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_touch_spin/flutter_touch_spin.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:recipes/screens/add_ingredients_to_shopping_list_screen.dart/add_ingredients_to_shopping_list_screen.dart';
 
 import '../../models/recipe.dart';
 import '../../models/user.dart';
@@ -42,7 +43,7 @@ class RecipeDetailScreen extends StatelessWidget {
             actions: [
               IconButton(
                 icon: const Icon(Icons.shopping_basket),
-                onPressed: () => _onAddToShoppingList(recipe),
+                onPressed: () => _onAddToShoppingList(context, recipe),
               ),
               _buildPopupMenuButton(context, recipe, repository, user),
             ],
@@ -103,7 +104,14 @@ class RecipeDetailScreen extends StatelessWidget {
     );
   }
 
-  void _onAddToShoppingList(Recipe recipe) {}
+  void _onAddToShoppingList(BuildContext context, Recipe recipe) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (c) => AddIngredientsToShoppingListScreen(recipe: recipe),
+        fullscreenDialog: true,
+      ),
+    );
+  }
 
   void _onEdit(BuildContext context, Recipe recipe) {
     Navigator.of(
