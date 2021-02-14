@@ -30,6 +30,14 @@ class ShoppingListRepository {
     return _getShoppingListDatabase(crewId).push().set(item.toMap());
   }
 
+  Future<void> addItems(List<ShoppingListItem> items, String crewId) async {
+    var database = _getShoppingListDatabase(crewId);
+
+    for (var item in items) {
+      await database.push().set(item.toMap());
+    }
+  }
+
   Future<void> updateItem(ShoppingListItem item, String crewId) {
     return _getShoppingListDatabase(crewId).child(item.id).update(item.toMap());
   }

@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:recipes/models/shopping_list_item.dart';
+import 'package:recipes/models/user.dart';
+import 'package:recipes/store/shopping_list_repository.dart';
 
 import '../../models/recipe.dart';
 import '../../models/recipe_ingredient.dart';
@@ -19,8 +23,9 @@ class AddIngredientsToShoppingListScreen extends StatefulWidget {
 class _AddIngredientsToShoppingListScreenState
     extends State<AddIngredientsToShoppingListScreen> {
   _AddIngredientsToShoppingListScreenState(List<RecipeIngredient> ingredients) {
-    this.ingredients =
-        Map.fromEntries(ingredients.map((i) => MapEntry(i, true)));
+    this.ingredients = Map.fromEntries(
+      ingredients.map((i) => MapEntry(i, true)),
+    );
   }
 
   Map<RecipeIngredient, bool> ingredients;
@@ -30,6 +35,12 @@ class _AddIngredientsToShoppingListScreenState
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add to shopping list'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.check),
+            onPressed: () => _addToShoppingList(context),
+          ),
+        ],
       ),
       body: ListView(
         children: ingredients.entries.map(_buildCheckboxListTile).toList(),
@@ -41,7 +52,7 @@ class _AddIngredientsToShoppingListScreenState
     MapEntry<RecipeIngredient, bool> entry,
   ) {
     return CheckboxListTile(
-      title: Text(entry.key.ingredientName),
+      title: Text(entry.key.toString()),
       value: entry.value,
       onChanged: (checked) => _toggleIngredient(entry.key),
     );
@@ -49,5 +60,25 @@ class _AddIngredientsToShoppingListScreenState
 
   void _toggleIngredient(RecipeIngredient ingredient) {
     setState(() => ingredients.update(ingredient, (isChecked) => !isChecked));
+  }
+
+  void _addToShoppingList(BuildContext context) {
+    var repository = Provider.of<ShoppingListRepository>(
+      context,
+      listen: false,
+    );
+    var user = Provider.of<User>(
+      context,
+      listen: false,
+    );
+
+    var shoppingListItems = ingredients.entries
+        .where((entry) => entry.value)
+        .map((entry) => ShoppingListItem.fromIngredient(entry.key))
+        .toList();
+
+    repository.addItems(shoppingListItems, user.crewId);
+
+    Navigator.of(context).pop();
   }
 }

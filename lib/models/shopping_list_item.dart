@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:meta/meta.dart';
+import 'recipe_ingredient.dart';
 
 class ShoppingListItem {
   ShoppingListItem({
@@ -25,6 +26,15 @@ class ShoppingListItem {
 
   factory ShoppingListItem.fromJson(String id, String source) =>
       ShoppingListItem.fromMap(id, json.decode(source) as Map<String, dynamic>);
+
+  factory ShoppingListItem.fromIngredient(RecipeIngredient ingredient) =>
+      ShoppingListItem(
+        id: null,
+        amount: ingredient.amount,
+        unit: ingredient.unit,
+        name: ingredient.ingredientName,
+        checked: false,
+      );
 
   String id;
   double amount;
