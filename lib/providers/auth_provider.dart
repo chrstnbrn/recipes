@@ -24,6 +24,8 @@ class AuthProvider {
                       (dbUser) => User(
                         id: user.uid,
                         name: user.displayName,
+                        email: user.email,
+                        photoUrl: user.photoURL,
                         crewId: dbUser?.crew,
                       ),
                     ),

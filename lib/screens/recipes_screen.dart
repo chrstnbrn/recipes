@@ -25,20 +25,12 @@ class _RecipeState extends State<RecipesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var authProvider = Provider.of<AuthProvider>(context);
     var repository = Provider.of<RecipeRepository>(context);
     var user = Provider.of<User>(context);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Recipes'),
-        actions: [
-          TextButton(
-            style: TextButton.styleFrom(primary: Colors.white),
-            onPressed: () => authProvider.signOut(),
-            child: const Text('Logout'),
-          )
-        ],
       ),
       body: Scrollbar(
         child: _buildRecipesList(repository.recipes(user.crewId)),
