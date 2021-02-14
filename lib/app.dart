@@ -60,8 +60,12 @@ class AppState extends State<App> {
     switch (navigationItem) {
       case NavigationItem.recipes:
         return Routes.recipes;
+      case NavigationItem.mealPlan:
+        return Routes.mealPlan;
       case NavigationItem.shoppingList:
         return Routes.shoppingList;
+      case NavigationItem.settings:
+        return Routes.settings;
       default:
         throw Error();
     }

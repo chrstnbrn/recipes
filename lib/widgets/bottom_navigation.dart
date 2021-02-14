@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-enum NavigationItem { recipes, shoppingList }
+enum NavigationItem { recipes, mealPlan, shoppingList, settings }
 
 class BottomNavigation extends StatelessWidget {
   const BottomNavigation({Key key, this.currentItem, this.onSelectItem})
@@ -17,12 +17,20 @@ class BottomNavigation extends StatelessWidget {
       currentIndex: currentItem.index,
       items: const [
         BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          title: Text('Recipes'),
+          icon: Icon(Icons.restaurant_menu),
+          label: 'Recipes',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.calendar_today),
+          label: 'Meal Plan',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.shopping_basket),
-          title: Text('Shopping List'),
+          label: 'Shopping List',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.settings),
+          label: 'Settings',
         ),
       ],
       onTap: (index) => onSelectItem(NavigationItem.values[index]),
