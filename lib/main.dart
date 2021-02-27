@@ -37,22 +37,8 @@ class RecipesApp extends StatelessWidget {
         }
 
         if (snapshot.connectionState == ConnectionState.done) {
-          var database = FirebaseDatabase.instance.reference();
           return MultiProvider(
-            providers: [
-              Provider<AuthProvider>(
-                create: (context) => AuthProvider(UserRepository(database)),
-              ),
-              Provider<RecipeRepository>(
-                create: (context) => RecipeRepository(database),
-              ),
-              Provider<ShoppingListRepository>(
-                create: (context) => ShoppingListRepository(database),
-              ),
-              Provider<MealPlanRepository>(
-                create: (context) => MealPlanRepository(database),
-              ),
-            ],
+            providers: _getProviders(),
             child: Builder(
               builder: (context) {
                 var authProvider = Provider.of<AuthProvider>(context);
@@ -78,5 +64,23 @@ class RecipesApp extends StatelessWidget {
         return const CircularProgressIndicator();
       },
     );
+  }
+
+  List<Provider> _getProviders() {
+    var database = FirebaseDatabase.instance.reference();
+    return [
+      Provider<AuthProvider>(
+        create: (context) => AuthProvider(UserRepository(database)),
+      ),
+      Provider<RecipeRepository>(
+        create: (context) => RecipeRepository(database),
+      ),
+      Provider<ShoppingListRepository>(
+        create: (context) => ShoppingListRepository(database),
+      ),
+      Provider<MealPlanRepository>(
+        create: (context) => MealPlanRepository(database),
+      ),
+    ];
   }
 }
