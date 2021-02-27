@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:recipes/models/meal_plan_view_model.dart';
+import 'package:recipes/store/meal_plan_service.dart';
+import 'package:recipes/store/recipe_repository.dart';
 
 import '../../models/meal_plan.dart';
 import '../../models/user.dart';
@@ -21,19 +24,28 @@ class MealPlanScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildMealPlan(BuildContext context) {
-    var repository = Provider.of<MealPlanRepository>(context);
+  Widget _buildMealPlan(
+    BuildContext context,
+  ) {
+    var mealPlanRepository = Provider.of<MealPlanRepository>(context);
+    var recipeRepository = Provider.of<RecipeRepository>(context);
     var user = Provider.of<User>(context);
+    var service = MealPlanService(
+      crewId: user?.crewId,
+      mealPlanRepository: mealPlanRepository,
+      recipeRepository: recipeRepository,
+    );
 
-    return StreamBuilder<MealPlan>(
-      stream: repository.getMealPlan(user.crewId),
+    return StreamBuilder<MealPlanViewModel>(
+      stream: service.mealPlanViewModel$,
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const CircularProgressIndicator();
         }
 
         return Column(
-          children: snapshot.data.unplannedMeals.map((e) => Text(e)).toList(),
+          children:
+              snapshot.data.unplannedMeals.map((e) => Text(e.name)).toList(),
         );
       },
     );
