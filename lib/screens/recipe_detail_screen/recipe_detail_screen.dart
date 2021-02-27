@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_touch_spin/flutter_touch_spin.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:recipes/screens/add_ingredients_to_shopping_list_screen.dart/add_ingredients_to_shopping_list_screen.dart';
+import 'package:recipes/store/meal_plan_repository.dart';
 
 import '../../models/recipe.dart';
 import '../../models/user.dart';
@@ -10,6 +10,7 @@ import '../../routes.dart';
 import '../../store/recipe_detail_service.dart';
 import '../../store/recipe_repository.dart';
 import '../../widgets/screen_body.dart';
+import '../add_ingredients_to_shopping_list_screen.dart/add_ingredients_to_shopping_list_screen.dart';
 import 'recipe_detail_ingredients.dart';
 import 'recipe_detail_steps.dart';
 
@@ -44,6 +45,10 @@ class RecipeDetailScreen extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.shopping_basket),
                 onPressed: () => _onAddToShoppingList(context, recipe),
+              ),
+              IconButton(
+                icon: const Icon(Icons.calendar_today),
+                onPressed: () => _onAddToMealPlan(context, recipe),
               ),
               _buildPopupMenuButton(context, recipe, repository, user),
             ],
@@ -111,6 +116,15 @@ class RecipeDetailScreen extends StatelessWidget {
         fullscreenDialog: true,
       ),
     );
+  }
+
+  void _onAddToMealPlan(BuildContext context, Recipe recipe) {
+    var mealPlanRepository = Provider.of<MealPlanRepository>(
+      context,
+      listen: false,
+    );
+    var user = Provider.of<User>(context, listen: false);
+    mealPlanRepository.addUnplannedMeal(recipe.id, user.crewId);
   }
 
   void _onEdit(BuildContext context, Recipe recipe) {

@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:recipes/store/meal_plan_repository.dart';
 
 import 'app.dart';
 import 'models/user.dart';
@@ -47,7 +48,10 @@ class RecipesApp extends StatelessWidget {
               ),
               Provider<ShoppingListRepository>(
                 create: (context) => ShoppingListRepository(database),
-              )
+              ),
+              Provider<MealPlanRepository>(
+                create: (context) => MealPlanRepository(database),
+              ),
             ],
             child: Builder(
               builder: (context) {
