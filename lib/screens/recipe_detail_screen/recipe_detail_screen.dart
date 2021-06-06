@@ -124,7 +124,7 @@ class RecipeDetailScreen extends StatelessWidget {
       listen: false,
     );
     var user = Provider.of<User>(context, listen: false);
-    mealPlanRepository.addUnplannedMeal(recipe.id, user.crewId);
+    mealPlanRepository.addUnplannedMeal(user.crewId, recipe.id);
   }
 
   void _onEdit(BuildContext context, Recipe recipe) {

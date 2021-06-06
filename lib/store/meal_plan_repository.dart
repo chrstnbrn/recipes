@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:firebase_database/firebase_database.dart';
+import 'package:intl/intl.dart';
 import '../models/meal_plan.dart';
 
 class MealPlanRepository {
@@ -26,13 +27,13 @@ class MealPlanRepository {
           jsonDecode(jsonEncode(event.snapshot.value)) as Map<String, dynamic>;
 
       final unplannedMeals = mapValue.entries
-          .where((element) => DateTime.tryParse(element.key) == null)
+          .where((element) => _tryParseUtcDate(element.key) == null)
           .expand((e) => _getRecipeIds(e.value))
           .toList();
 
       final plannedMeals = Map.fromEntries(mapValue.entries
           .map((e) => MapEntry(
-                DateTime.tryParse(e.key),
+                _tryParseUtcDate(e.key),
                 _getRecipeIds(e.value),
               ))
           .where((e) => e.key != null));
@@ -44,27 +45,45 @@ class MealPlanRepository {
     });
   }
 
-  Future<void> addUnplannedMeal(String recipeId, String crewId) {
+  Future<void> addUnplannedMeal(String crewId, String recipeId) {
     return _getMealPlanDatabase(crewId).child('unplanned').push().set(recipeId);
   }
 
-  Future<void> addMealForDate(DateTime date, String recipeId, String crewId) {
-    return _getMealPlanDatabase(crewId)
-        .child(date.toIso8601String())
-        .push()
-        .set(recipeId);
+  Future<void> updateUnplannedMeals(String crewId, List<String> recipeIds) {
+    return _getMealPlanDatabase(crewId).child('unplanned').set(recipeIds);
   }
 
-  Future<void> removeMeal(DateTime date, String recipeId, String crewId) {
-    return _getMealPlanDatabase(crewId)
-        .child(date.toIso8601String())
-        .child(recipeId)
-        .remove();
+  Future<void> updatePlannedMealsForDay(
+    String crewId,
+    DateTime date,
+    List<String> recipeIds,
+  ) {
+    return _getMealPlanDatabase(crewId).child(getKey(date)).set(recipeIds);
   }
 
   List<String> _getRecipeIds(dynamic recipeIdsMap) {
+    if (recipeIdsMap is List<dynamic>) {
+      return recipeIdsMap.map((dynamic x) => x.toString()).toList();
+    }
     return Map<String, String>.from(recipeIdsMap as Map<dynamic, dynamic>)
         .values
         .toList();
+  }
+
+  DateTime _tryParseUtcDate(String value) {
+    if (value == 'unplanned') {
+      return null;
+    }
+
+    return DateTime.tryParse('${value}T00:00:00Z');
+  }
+
+  String getKey(DateTime date) {
+    if (date == null) {
+      return 'unplanned';
+    }
+
+    var format = DateFormat('yyyy-MM-dd');
+    return format.format(date);
   }
 }

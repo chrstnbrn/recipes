@@ -5,9 +5,16 @@ import 'recipe.dart';
 class MealPlanViewModel {
   MealPlanViewModel({
     @required this.unplannedMeals,
-    @required this.days,
+    @required this.plannedMeals,
   });
 
-  List<Recipe> unplannedMeals;
-  Map<DateTime, List<Recipe>> days;
+  MealPlanDayViewModel unplannedMeals;
+  List<MealPlanDayViewModel> plannedMeals;
+}
+
+class MealPlanDayViewModel {
+  MealPlanDayViewModel(this.day, this.recipes);
+
+  final DateTime day;
+  final List<Recipe> recipes;
 }
